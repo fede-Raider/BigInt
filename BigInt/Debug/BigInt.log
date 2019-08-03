@@ -1,0 +1,9 @@
+﻿  BigInt.cpp
+e:\bigint\bigint\bigint.cpp(136): warning C4244: '=': conversion from 'int_fast64_t' to 'int', possible loss of data
+e:\bigint\bigint\bigint.cpp(268): warning C4018: '<': signed/unsigned mismatch
+e:\bigint\bigint\bigint.cpp(269): warning C4018: '<': signed/unsigned mismatch
+e:\bigint\bigint\bigint.cpp(285): warning C4018: '<': signed/unsigned mismatch
+e:\bigint\bigint\bigint.cpp(286): warning C4018: '<': signed/unsigned mismatch
+  Main.cpp
+  Generating Code...
+  BigInt.vcxproj -> E:\BigInt\Debug\BigInt.exe
