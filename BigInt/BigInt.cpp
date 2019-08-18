@@ -350,6 +350,63 @@ BigInt BigInt::operator-() const {
 }
 BigInt BigInt::operator*(const BigInt& rhs) const {
 	BigInt result;
+	result.positive = positive && rhs.positive;
+
+	//auto it = number.begin(); it != number.end(); it++
+	//auto rhsit = rhs.number.begin(); rhsit != rhs.number.end(); rhsit++
+	//(*rhsit) *(*it)
+	div_t dt;
+	div_t dt2;
+	for (int i = 0; i < number.size();i++) {
+
+		for (int j = 0; j < rhs.number.size(); j++) {
+			dt.quot = 0;
+			dt.rem = 0;
+			dt = DivideNumberToBase(number[i]* rhs.number[j]);
+			if (i + j >= result.number.size()) {
+				result.number.push_back(dt.rem);
+			}
+			else
+			{
+				result.number[i + j] += dt.rem;
+				dt2.quot = 0;
+				dt2.rem = 0;
+				if (result.number[i + j] > BASE) {
+					dt2 = DivideNumberToBase(result.number[i + j]);
+					result.number[i + j] = dt2.rem;
+					if (i + j + 1 >= result.number.size()) {
+						result.number.push_back(dt2.quot);
+					}
+					else {
+						result.number[i + j + 1] += dt2.quot;
+
+					}
+				}
+			}
+			if (dt.quot != 0) {
+
+				if (i + j + 1 >= result.number.size()) {
+					result.number.push_back(dt.quot);
+				}
+				else {
+					result.number[i + j + 1] += dt.quot;
+					dt2.quot = 0;
+					dt2.rem = 0;
+					if (result.number[i + j + 1] > BASE) {
+						dt2 = DivideNumberToBase(result.number[i + j + 1]);
+						result.number[i + j + 1] = dt2.rem;
+						if (i + j + 2 >= result.number.size()) {
+							result.number.push_back(dt2.quot);
+						}
+						else {
+							result.number[i + j + 2] += dt2.quot;
+
+						}
+					}
+				}
+			}
+		}
+	}
 	return result;
 }
 

@@ -111,6 +111,32 @@ void TestOperators4() {
 	std::cout << x1 <<"\n";
 
 }
+void TestMultiplication() {
+	BigInt x1;
+	BigInt x2;
+	BigInt xres;
+	x1 = "123000000000000000345";  
+	x2 = "115085000000000000001";  
+	xres = x1 * x2;
+	std::cout << xres << "\n\n";
+	x1 = "123008123000000545345";  //"123 008 123 000 000 545 345"
+	x2 = "115085040320000432333";  //"115 085 040 320 000 432 333" 
+	xres = x1 * x2;
+	std::cout << xres << "\n\n";
+	x1 = "123008123000000545345";  //"123 008 123 000 000 545 345"
+	x2 = "85040320000432333";  //"000 085 040 320 000 432 333" 
+	xres = x1 * x2;
+	std::cout << xres << "\n\n";
+	x1 = "123008123000000545345";  //"123 008 123 000 000 545 345"
+	x2 = "40320000432333";  //"040 320 000 432 333" 
+	xres = x1 * x2;
+	std::cout << xres << "\n\n";
+	x1 = "5000000000";  //"123 008 123 000 000 545 345"
+	x2 = "5000000040";  //"115 085 040 320 000 432 333" 
+	xres = x1 * x2;
+	std::cout << xres << "\n";
+
+}
 
 void TestCopy() {
 	BigInt x = "-2";
@@ -232,8 +258,7 @@ int main() {
 	std::cout << xres << "\n";
 	//assert(x + y == "-999999999");
 
-	//BigInt y = pow(x, 10);
-
+	TestMultiplication();
 
 	//system("PAUSE");
 	std::cout << "execution ended";
