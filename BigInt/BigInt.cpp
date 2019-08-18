@@ -231,11 +231,26 @@ BigInt::BigInt(const std::string& s) {
 			number.push_back(atoi(s.substr(1, (s.size() - 1) % DIGIT_COUNT).c_str()));
 		}
 	}
+
+	while (number.size() > 1) {
+
+		if (*(number.end() - 1) == 0)
+		{
+			number.pop_back();
+		}
+		else
+		{
+			break;
+		}
+	}
+	//il ciclo for successivo non serve a niente, temo
+	/*
 	for (int i = number.size() - 1; i > 0; --i) {
 		if (number[i] == 0) {
 			number.pop_back();
 		}
 	}
+	*/
 	CheckZero();
 }
 
