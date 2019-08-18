@@ -216,6 +216,20 @@ int main() {
 	y = -34000;
 	xres = x + y;
 	std::cout << xres << "\n";
+
+
+	x = "-123000000000000000345";  //"123 000 000 000 000 000 345"
+	y = "123000000000000000001";  //"123 000 000 000 000 000 001"
+	xres = x + y;
+	std::cout << xres << "\n";
+
+
+	x = "123000000000000000345";  //"123 000 000 000 000 000 345"
+	y = "115085000000000000001";  //"115 085 000 000 000 000 001"  
+    //errore trovato nell'esecuzione di questa sottrazione: 
+	//la sottrazione viene eseguita bene: c'è un errore nell'assegnare a x il nuovo valore contenuto nella stringa
+	xres = x - y;
+	std::cout << xres << "\n";
 	//assert(x + y == "-999999999");
 
 	//BigInt y = pow(x, 10);

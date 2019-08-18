@@ -303,6 +303,23 @@ BigInt BigInt::operator-(const BigInt & rhs) const {
 				//dt = DivideNumberToBase(-dt.quot + (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0));
 				//result.number.push_back(dt.rem);
 			}
+			// con questo ciclo while con if interno tolgo tutti gli 0 finali - potrebbe esserci più di un numero uguale a 0.
+			while (result.number.size() > 1) {
+
+				if (*(result.number.end() - 1) == 0)
+				{
+					result.number.pop_back();
+				}
+				else
+				{
+					break;
+				}
+			}
+			/*  -------- con questo ciclo if interno tolgo lo 0 finale, ma ne tolgo solo uno, l'ultimo
+			if (result.number.size() > 1 && *(result.number.end()-1) == 0 ) {
+				result.number.pop_back();
+			}
+			*/
 			return result;
 		}
 		return -(rhs - *this);
@@ -316,7 +333,11 @@ BigInt BigInt::operator-() const {
 	result.positive = !positive;
 	return result;
 }
-;
+BigInt BigInt::operator*(const BigInt& rhs) const {
+	BigInt result;
+	return result;
+}
+
 
 std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
 	if (!bi.positive) {
