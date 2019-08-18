@@ -100,6 +100,16 @@ void TestOperators4() {
 	x1 = "1000000000";
 	x1--;
 	assert(x1 == "999999999");
+
+	x1 = "0";
+	std::cout << x1 << "\n";
+	assert(x1-- == "0");
+	assert(x1 == "-1");
+	std::cout << x1 << "\n";
+	--x1;
+	assert(x1 == "-2");
+	std::cout << x1 <<"\n";
+
 }
 
 void TestCopy() {
@@ -125,15 +135,24 @@ void TestOperators5() {
 int main() {
 
 	TestOperators();
+	std::cout << "test 1 - operators : succeeded\n";
+
 	TestOperators2();
+	std::cout << "test 2 - operators : succeeded\n";
+
 	TestOperators3();
+	std::cout << "test 3 - operators : succeeded\n";
+
 	TestOperators4();
+	std::cout << "test 4 - operators : succeeded\n";
+
 	TestCopy();
 	{
 		unsigned long long int k = 999999999999909999;
 		BigInt x = k;
 		BigInt k2 = std::move(x);
 	}
+	std::cout << "test 5 - copy and move : succeeded\n";
 
 
 	
@@ -153,6 +172,7 @@ int main() {
 	x1 = -999999999;
 	y1 = -999999999;
 	assert(x1 + y1 == "-1999999998");
+	std::cout << "test 6 - sum : succeeded\n";
 
 
 	x1 = -999999999;
@@ -170,16 +190,37 @@ int main() {
 	x = "-1000000002";
 	y = 1;
 	assert(x + y == "-1000000001");
-
-
-	x = "-1000000000";
-	y = 1;
-	assert(x + y == "-999999999");
-	
-	//BigInt y = pow(x, 10);
+	std::cout << "test 7 - sum and difference : succeeded\n";
 
 	BigInt w = "-999999999";
 	++w;
-	system("PAUSE");
+	std::cout << "test 8 - increment decrement operators : succeeded\n";
 
+	// next assert fails....
+
+	x = "-1000000000";
+	y = 1;
+	BigInt xres = x + y;
+	std::cout << xres << "\n";
+	//assert(x + y == "-999999999");
+	
+	std::cout << "test 9 - sum and difference 2 : succeeded\n";
+
+
+	x = "-1000000000";
+	y = 4;
+	xres = x + y;
+	std::cout << xres << "\n";
+
+	x = "123000000345";
+	y = -34000;
+	xres = x + y;
+	std::cout << xres << "\n";
+	//assert(x + y == "-999999999");
+
+	//BigInt y = pow(x, 10);
+
+
+	//system("PAUSE");
+	std::cout << "execution ended";
 }

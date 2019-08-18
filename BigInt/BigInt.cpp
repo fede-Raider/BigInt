@@ -56,6 +56,11 @@ BigInt & BigInt::operator--() {
 				} else {
 					positive = !positive;
 					*it = 1;
+					it++; //IN REALTA E' GIUSTO: mancava questa riga
+					//penso che il programma qui sia sbagliato: se dopo aver diminuito ogni numero
+					//trovo che questo è più grande della base, allora vuol dire che ogni numero inizialmente era zero
+					//pertanto il numero finale deve diventare -1 e quindi va impostato come numero negativo (ok)
+					// e tutti gli altri numeri vanno riportati a 0 tranne il primo ( quello con iteratore number.begin() )
 				}
 			} else {
 				if (number.size() > 1 && *it == 0 && (it + 1) == number.end()) {
@@ -282,9 +287,21 @@ BigInt BigInt::operator-(const BigInt & rhs) const {
 			result.number.pop_back();
 			div_t dt;
 			dt.quot = 0;
-			for (int i = 0; dt.quot || (i < std::max(number.size(), rhs.number.size())); ++i) {
-				dt = DivideNumberToBase(-dt.quot + (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0));
-				result.number.push_back(dt.rem);
+			//in questo blocco if sono già nella situazione in cui il primo numero è maggiore nel secondo: le due size saranno al più uguali
+			//dt.quot || (i < std::max(number.size(), rhs.number.size()))
+			for (int i = 0; dt.quot || (i < number.size()); ++i) {
+				dt.rem = (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0) - dt.quot;
+				//
+				if (dt.rem >= 0) {
+					result.number.push_back(dt.rem);
+					dt.quot = 0;
+				}
+				else {
+					result.number.push_back(BASE  + dt.rem ); // quando dt.rem è minore di 0, il suo valore numerico è quello che devo sottrarre a 1 000 000 000
+					dt.quot = 1;
+				}
+				//dt = DivideNumberToBase(-dt.quot + (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0));
+				//result.number.push_back(dt.rem);
 			}
 			return result;
 		}
