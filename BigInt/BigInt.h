@@ -33,6 +33,8 @@ public:
 	BigInt operator+(const BigInt& rhs) const;
 	BigInt operator-(const BigInt& rhs) const;
 	BigInt operator-() const;
+	BigInt operator*(const BigInt& rhs) const;
+
 
 	//INCREMENT OPERATORS
 	BigInt& operator++();
@@ -50,6 +52,7 @@ public:
 private:
 	div_t DivideNumberToBase(int_fast64_t i) const;
 	void CheckZero();
+	void RemoveUselessZero();
 	BigInt abs() const;
 private:
 	// std::vector<int> number;

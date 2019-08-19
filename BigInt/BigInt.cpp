@@ -56,6 +56,7 @@ BigInt & BigInt::operator--() {
 				} else {
 					positive = !positive;
 					*it = 1;
+					it++; //IN REALTA E' GIUSTO: mancava questa riga
 				}
 			} else {
 				if (number.size() > 1 && *it == 0 && (it + 1) == number.end()) {
@@ -67,7 +68,6 @@ BigInt & BigInt::operator--() {
 	}
 	CheckZero();
 	return *this;
-	// TODO: insert return statement here
 }
 
 BigInt BigInt::operator--(int) {
@@ -80,8 +80,8 @@ bool BigInt::operator==(const BigInt & rhs) const {
 	if (positive != rhs.positive || number.size() != rhs.number.size()) {
 		return false;
 	}
-	for (int i = number.size() - 1; i >= 0; --i) {
-		if (number[i] != rhs.number[i]) {
+	for (size_t i = number.size(); i > 0; --i) {
+		if (number[i-1] != rhs.number[i-1]) {
 			return false;
 		}
 	}
@@ -101,19 +101,19 @@ bool BigInt::operator<(const BigInt & rhs) const {
 	}
 
 	if (number.size() > rhs.number.size()) {
-		return positive ? false : true;
+		return !positive;
 	}
 
 	if (number.size() < rhs.number.size()) {
-		return positive ? true : false;
+		return positive;
 	}
 
-	for (int i = number.size() - 1; i >= 0; --i) {
-		if (number[i] < rhs.number[i]) {
-			return positive ? true : false;
+	for (size_t i = number.size(); i > 0; --i) {
+		if (number[i-1] < rhs.number[i-1]) {
+			return positive;
 		}
-		if (number[i] > rhs.number[i]) {
-			return positive ? false : true;
+		if (number[i-1] > rhs.number[i-1]) {
+			return !positive;
 		}
 	}
 	return false;
@@ -141,6 +141,16 @@ div_t BigInt::DivideNumberToBase(int_fast64_t i) const {
 void BigInt::CheckZero() {
 	if (number.size() == 1 && number[0] == 0) {
 		positive = true;
+	}
+}
+
+void BigInt::RemoveUselessZero() {
+	for (size_t i = number.size() - 1; i > 0; --i) {
+		if (number[i] == 0) {
+			number.pop_back();
+		} else {
+			return;
+		}
 	}
 }
 
@@ -212,7 +222,7 @@ BigInt::BigInt(const std::string& s) {
 	int slot = s.size() / DIGIT_COUNT + 1;
 
 	number.reserve(slot);
-	for (int i = 1; i < slot; ++i) {
+	for (size_t i = 1; i < slot; ++i) {
 		number.push_back(atoi(s.substr(s.size() - i * DIGIT_COUNT, DIGIT_COUNT).c_str()));
 	}
 
@@ -226,11 +236,7 @@ BigInt::BigInt(const std::string& s) {
 			number.push_back(atoi(s.substr(1, (s.size() - 1) % DIGIT_COUNT).c_str()));
 		}
 	}
-	for (int i = number.size() - 1; i > 0; --i) {
-		if (number[i] == 0) {
-			number.pop_back();
-		}
-	}
+	RemoveUselessZero();
 	CheckZero();
 }
 
@@ -265,7 +271,7 @@ BigInt BigInt::operator+(const BigInt & rhs) const {
 		result.number.pop_back();
 		div_t dt;
 		dt.quot = 0;
-		for (int i = 0; dt.quot || (i < std::max(number.size(), rhs.number.size())); ++i) {
+		for (size_t i = 0; dt.quot || (i < std::max(number.size(), rhs.number.size())); ++i) {
 			dt = DivideNumberToBase(dt.quot + (i < number.size() ? number[i] : 0) + (i < rhs.number.size() ? rhs.number[i] : 0));
 			result.number.push_back(dt.rem);
 		}
@@ -282,10 +288,23 @@ BigInt BigInt::operator-(const BigInt & rhs) const {
 			result.number.pop_back();
 			div_t dt;
 			dt.quot = 0;
-			for (int i = 0; dt.quot || (i < std::max(number.size(), rhs.number.size())); ++i) {
-				dt = DivideNumberToBase(-dt.quot + (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0));
-				result.number.push_back(dt.rem);
+			//in questo blocco if sono già nella situazione in cui il primo numero è maggiore nel secondo: le due size saranno al più uguali
+			//dt.quot || (i < std::max(number.size(), rhs.number.size()))
+			for (size_t i = 0; dt.quot || (i < number.size()); ++i) {
+				dt.rem = (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0) - dt.quot;
+				//
+				if (dt.rem >= 0) {
+					result.number.push_back(dt.rem);
+					dt.quot = 0;
+				}
+				else {
+					result.number.push_back(BASE  + dt.rem ); // quando dt.rem è minore di 0, il suo valore numerico è quello che devo sottrarre a 1 000 000 000
+					dt.quot = 1;
+				}
+				//dt = DivideNumberToBase(-dt.quot + (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0));
+				//result.number.push_back(dt.rem);
 			}
+			result.RemoveUselessZero();
 			return result;
 		}
 		return -(rhs - *this);
@@ -299,20 +318,81 @@ BigInt BigInt::operator-() const {
 	result.positive = !positive;
 	return result;
 }
-;
+BigInt BigInt::operator*(const BigInt& rhs) const {
+	BigInt result;
+	result.positive = positive && rhs.positive;
+
+	//auto it = number.begin(); it != number.end(); it++
+	//auto rhsit = rhs.number.begin(); rhsit != rhs.number.end(); rhsit++
+	//(*rhsit) *(*it)
+	div_t dt;
+	div_t dt2;
+	for (size_t i = 0; i < number.size();i++) {
+
+		for (size_t j = 0; j < rhs.number.size(); j++) {
+			dt.quot = 0;
+			dt.rem = 0;
+			dt = DivideNumberToBase(number[i]* rhs.number[j]);
+			if (i + j >= result.number.size()) {
+				result.number.push_back(dt.rem);
+			}
+			else
+			{
+				result.number[i + j] += dt.rem;
+				dt2.quot = 0;
+				dt2.rem = 0;
+				if (result.number[i + j] > BASE) {
+					dt2 = DivideNumberToBase(result.number[i + j]);
+					result.number[i + j] = dt2.rem;
+					if (i + j + 1 >= result.number.size()) {
+						result.number.push_back(dt2.quot);
+					}
+					else {
+						result.number[i + j + 1] += dt2.quot;
+
+					}
+				}
+			}
+			if (dt.quot != 0) {
+
+				if (i + j + 1 >= result.number.size()) {
+					result.number.push_back(dt.quot);
+				}
+				else {
+					result.number[i + j + 1] += dt.quot;
+					dt2.quot = 0;
+					dt2.rem = 0;
+					if (result.number[i + j + 1] > BASE) {
+						dt2 = DivideNumberToBase(result.number[i + j + 1]);
+						result.number[i + j + 1] = dt2.rem;
+						if (i + j + 2 >= result.number.size()) {
+							result.number.push_back(dt2.quot);
+						}
+						else {
+							result.number[i + j + 2] += dt2.quot;
+
+						}
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
 
 std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
 	if (!bi.positive) {
 		s << '-';
 	}
 	bool first = true;
-	for (int i = bi.number.size() - 1; i >= 0; --i) {
+	for (size_t i = bi.number.size(); i > 0; --i) {
 		if (first) {
-			s << bi.number[i];
+			s << bi.number[i-1];
 			first = false;
 		}
 		else {
-			s << std::setfill('0') << std::setw(BigInt::DIGIT_COUNT) << bi.number[i];
+			s << std::setfill('0') << std::setw(BigInt::DIGIT_COUNT) << bi.number[i-1];
 		}
 	}
 	return s;
