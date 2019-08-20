@@ -332,7 +332,7 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 		for (size_t j = 0; j < rhs.number.size(); j++) {
 			dt.quot = 0;
 			dt.rem = 0;
-			dt = DivideNumberToBase(number[i]* rhs.number[j]);
+			dt = DivideNumberToBase(((int_fast64_t)number[i]) * ((int_fast64_t)rhs.number[j]));
 			if (i + j >= result.number.size()) {
 				result.number.push_back(dt.rem);
 			}
@@ -400,5 +400,23 @@ std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
 
 //NON FA NULLA
 BigInt pow(const BigInt& base, const BigInt& exp) {
-	return BigInt();
+	if (exp.positive)
+	{
+		BigInt result(1);
+		BigInt expCursor(0);
+		while (expCursor != exp) {
+
+			result = result * base;
+			++expCursor;
+		}
+
+
+		return result;
+	}
+	else {
+		//impossible: undefined in integers set
+		BigInt result(0);
+		return result;
+	}
+
 }
