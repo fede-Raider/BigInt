@@ -325,7 +325,7 @@ BigInt BigInt::operator-() const {
 }
 BigInt BigInt::operator*(const BigInt& rhs) const {
 	BigInt result;
-	result.positive = positive && rhs.positive;
+	result.positive = !(positive ^ rhs.positive);
 
 	//auto it = number.begin(); it != number.end(); it++
 	//auto rhsit = rhs.number.begin(); rhsit != rhs.number.end(); rhsit++
@@ -382,6 +382,8 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 			}
 		}
 	}
+	result.RemoveUselessZero();
+	result.CheckZero();
 	return result;
 }
 

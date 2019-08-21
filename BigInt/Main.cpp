@@ -19,17 +19,15 @@ int main() {
 	TestMoveCopyOperators();
 	std::cout << "Test 3 - Move Copy operators : succeeded\n";
 
-	//MOVE
-	std::cout << "Test 4 - Move operator : succeeded\n";
-
 	TestMathsOperators();
-	std::cout << "Test 5 - Maths operators : succeeded\n";
+	std::cout << "Test 4 - Maths operators : succeeded\n";
 
 	TestMultiplication();
-	std::cout << "Test 6 - Multiplication : succeeded\n";
+	std::cout << "Test 5 - Multiplication : succeeded\n";
+	std::cout << "execution ended\n";
 
-	system("PAUSE");
-	std::cout << "execution ended";
+	int k = 0;
+	std::cin >> k;
 }
 
 void TestComparisonOperators() {
@@ -243,6 +241,31 @@ void TestMultiplication() {
 	x2 = "5000019995001999";
 	xres = x1 * x2;
 	assert(xres == "25000199950419790104940013996001");
+
+	x1 = "-5000019995001999";
+	x2 = 0;
+	xres = x1 * x2;
+	assert(xres == "0");
+
+	x1 = "-5000019995001999";
+	x2 = 1;
+	xres = x1 * x2;
+	assert(xres == "-5000019995001999");
+
+	x1 = "-5000019995001999";
+	x2 = -1;
+	xres = x1 * x2;
+	assert(xres == "5000019995001999");
+
+	x1 = "-5000019995001999";
+	x2 = 1;
+	xres = x1 * x2;
+	assert(xres == "-5000019995001999");
+
+	x1 = "5000019995001999";
+	x2 = 1;
+	xres = x1 * x2;
+	assert(xres == "5000019995001999");
 }
 
 void TestMoveCopyOperators() {
