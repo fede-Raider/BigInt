@@ -9,7 +9,6 @@ void TestMathsOperators();
 void TestMultiplication();
 
 int main() {
-
 	TestComparisonOperators();
 	std::cout << "Test 1 - Comparison operators : succeeded\n";
 
@@ -24,7 +23,7 @@ int main() {
 
 	TestMultiplication();
 	std::cout << "Test 5 - Multiplication : succeeded\n";
-	std::cout << "execution ended\n";
+	std::cout << "Execution ended\n";
 
 	int k = 0;
 	std::cin >> k;
