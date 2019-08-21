@@ -275,6 +275,10 @@ BigInt BigInt::operator+(const BigInt & rhs) const {
 			dt = DivideNumberToBase(dt.quot + (i < number.size() ? number[i] : 0) + (i < rhs.number.size() ? rhs.number[i] : 0));
 			result.number.push_back(dt.rem);
 		}
+		//FORSE INUTILI
+		result.RemoveUselessZero();
+		result.CheckZero();
+		//
 		return result;
 	}
 	return *this - (-rhs);
@@ -305,6 +309,7 @@ BigInt BigInt::operator-(const BigInt & rhs) const {
 				//result.number.push_back(dt.rem);
 			}
 			result.RemoveUselessZero();
+			result.CheckZero();
 			return result;
 		}
 		return -(rhs - *this);

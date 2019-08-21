@@ -2,7 +2,37 @@
 #include "BigInt.h"
 #include <assert.h> 
 
-void TestOperators() {
+void TestComparisonOperators();
+void TestIncrementOperators();
+void TestMoveCopyOperators();
+void TestMathsOperators();
+void TestMultiplication();
+
+int main() {
+
+	TestComparisonOperators();
+	std::cout << "Test 1 - Comparison operators : succeeded\n";
+
+	TestIncrementOperators();
+	std::cout << "Test 2 - Increment operators : succeeded\n";
+
+	TestMoveCopyOperators();
+	std::cout << "Test 3 - Move Copy operators : succeeded\n";
+
+	//MOVE
+	std::cout << "Test 4 - Move operator : succeeded\n";
+
+	TestMathsOperators();
+	std::cout << "Test 5 - Maths operators : succeeded\n";
+
+	TestMultiplication();
+	std::cout << "Test 6 - Multiplication : succeeded\n";
+
+	system("PAUSE");
+	std::cout << "execution ended";
+}
+
+void TestComparisonOperators() {
 	BigInt x = "-74823645945764595679202347874897";
 	BigInt y;
 
@@ -13,8 +43,12 @@ void TestOperators() {
 	BigInt zero = "0";
 	BigInt zero2 = "-0";
 	BigInt zero3 = "00000000000000000";
+	BigInt zero4 = 0;
+	BigInt zero5 = -0;
 	assert(zero == zero2);
 	assert(zero == zero3);
+	assert(zero == zero4);
+	assert(zero == zero5);
 
 	BigInt one = "01";
 	BigInt one2 = "00000000000000000001";
@@ -47,30 +81,27 @@ void TestOperators() {
 	assert(y >= x);
 }
 
-void TestOperators2() {
-	BigInt x = "123456789";
-	BigInt y = "123456789";
+void TestIncrementOperators() {
+	// ++int
+	{
+		BigInt x1 = 1;
+		assert(++x1 == 2);
+		BigInt x2 = 0;
+		assert(++x2 == 1);
+		BigInt x3 = "999999999";
+		assert(++x3 == "1000000000");
+		BigInt x4 = "-999999999";
+		assert(++x4 == "-999999998");
+		BigInt x5 = "-1";
+		assert(++x5 == "0");
+		BigInt x6 = "-2";
+		assert(++x6 == "-1");
+		BigInt x7 = "-0";
+		assert(++x7 == "1");
+	}
 
-}
 
-void TestOperators3() {
-	BigInt x1 = 1;
-	assert(++x1 == 2);
-	BigInt x2 = 0;
-	assert(++x2 == 1);
-	BigInt x3 = "999999999";
-	assert(++x3 == "1000000000");
-	BigInt x4 = "-999999999";
-	assert(++x4 == "-999999998");
-	BigInt x5 = "-1";
-	assert(++x5 == "0");
-	BigInt x6 = "-2";
-	assert(++x6 == "-1");
-	BigInt x7 = "-0";
-	assert(++x7 == "1");
-}
-
-void TestOperators4() {
+	// int++
 	BigInt x1 = 1;
 	assert(x1++ == 1);
 	assert(x1 == 2);
@@ -97,24 +128,89 @@ void TestOperators4() {
 	x1++;
 	assert(x1 == "-999999999");
 
+	//int--
 	x1 = "1000000000";
 	x1--;
 	assert(x1 == "999999999");
 
 	x1 = "0";
-	std::cout << x1 << "\n";
 	assert(x1-- == "0");
 	assert(x1 == "-1");
-	std::cout << x1 << "\n";
+
+	//--int
 	--x1;
 	assert(x1 == "-2");
-	std::cout << x1 <<"\n";
 
+	x1 = 0;
+	assert(--x1 == "-1");
 }
-void TestMultiplication() {
-	std::cout << "Test signed 64 bit integer fast  max value" << "\n";
-	std::cout << INT_FAST64_MAX << "   " << INT_FAST64_MIN << "\n\n";
 
+void TestMathsOperators() {
+	BigInt x = 999999999;
+	BigInt y = 1;
+	assert(x + y == "1000000000");
+	assert(y + x == "1000000000");
+	assert(x - y == "999999998");
+	assert(y - x == "-999999998");
+
+	BigInt x1 = 999999999;
+	BigInt y1 = 999999999;
+	assert(x1 + y1 == "1999999998");
+	assert(x1 - y1 == 0);
+	
+	x = -999999999;
+	y = -1;
+	assert(x + y == "-1000000000");
+	assert(y + x == "-1000000000");
+	assert(x - y == "-999999998");
+	assert(y - x == "999999998");
+
+	x1 = -999999999;
+	y1 = -999999999;
+	assert(x1 + y1 == "-1999999998");
+	assert(x1 - y1 == "0");
+
+	x1 = -999999999;
+	y1 = 1;
+	assert(x1 - y1 == "-1000000000");
+	assert(x1 + y1 == "-999999998");
+	assert(y1 + x1 == "-999999998");
+	assert(y1 - x1 == "1000000000");
+
+	x = 999999999;
+	y = -1;
+	assert(x + y == 999999998);
+	assert(y + x == 999999998);
+	assert(x - y == "1000000000");
+	assert(y - x == "-1000000000");
+
+	x = 0;
+	y = 0;
+	assert(x + y == 0);
+	assert(x - y == 0);
+	assert(y + x == 0);
+	assert(y - x == 0);
+
+	x = 5;
+	assert(x + y == 5);
+	assert(x - y == 5);
+	assert(y + x == 5);
+	assert(y - x == -5);
+
+	x = "123000000345";
+	y = -34000;
+	assert(x + y == "122999966345");
+
+	x = "-123000000000000000345";  //"123 000 000 000 000 000 345"
+	y = "123000000000000000001";  //"123 000 000 000 000 000 001"
+	assert(x + y == "-344");
+
+	x = "123000000000000000345";  //"123 000 000 000 000 000 345"
+	y = "115085000000000000001";  //"115 085 000 000 000 000 001"  
+	assert(x - y == "7915000000000000344");
+}
+
+void TestMultiplication() {
 	BigInt x1;
 	BigInt x2;
 	BigInt xres;
@@ -122,87 +218,34 @@ void TestMultiplication() {
 	x2 = "115085000000000000001";
 	xres = x1 * x2;
 	assert(xres == "14155455000000000039827325000000000000345");
+
 	x1 = "123008123000000545345";  //"123 008 123 000 000 545 345"
 	x2 = "115085040320000432333";  //"115 085 040 320 000 432 333" 
 	xres = x1 * x2;
 	assert(xres == "14156394795142635301522154269635770639885");
+
 	x1 = "123008123000000545345";  //"123 008 123 000 000 545 345"
 	x2 = "85040320000432333";      //"     85 040 320 000 432 333" 
 	xres = x1 * x2;
 	assert(xres == "10460650142572586847154269635770639885");
+
 	x1 = "123008123000000545345";  //"123 008 123 000 000 545 345"
 	x2 = "40320000432333";         //"         40 320 000 432 333" 
 	xres = x1 * x2;
 	assert(xres == "4959687572540492829269635770639885");
+
 	x1 = "5000000005000000";  //"123 008 123 000 000 545 345"
 	x2 = "5000000005000000";  //"115 085 040 320 000 432 333" 
 	xres = x1 * x2;
 	assert(xres == "25000000050000000025000000000000");
+
 	x1 = "5000019995001999";
 	x2 = "5000019995001999";
 	xres = x1 * x2;
 	assert(xres == "25000199950419790104940013996001");
 }
-void TestSumAndDifference() {
-	BigInt x = 999999999;
-	BigInt y = 1;
-	assert(x + y == "1000000000");
 
-	BigInt x1 = 999999999;
-	BigInt y1 = 999999999;
-	assert(x1 + y1 == "1999999998");
-
-
-	x = -999999999;
-	y = -1;
-	assert(x + y == "-1000000000");
-
-	x1 = -999999999;
-	y1 = -999999999;
-	assert(x1 + y1 == "-1999999998");
-
-	x1 = -999999999;
-	y1 = 1;
-	assert(x1 - y1 == "-1000000000");
-
-	x = 999999999;
-	y = -1;
-	assert(x + y == 999999998);
-
-	x = -999999999;
-	y = 1;
-	assert(x + y == -999999998);
-
-	x = "-1000000002";
-	y = 1;
-	assert(x + y == "-1000000001");
-
-	x = "-1000000000";
-	y = 1;
-	assert(x + y == "-999999999");
-
-	x = "-1000000000";
-	y = 4;
-	assert(x + y == "-999999996");
-
-	x = "123000000345";
-	y = -34000;
-	assert(x + y == "122999966345");
-
-
-
-	x = "-123000000000000000345";  //"123 000 000 000 000 000 345"
-	y = "123000000000000000001";  //"123 000 000 000 000 000 001"
-	assert(x + y == "-344");
-
-
-
-	x = "123000000000000000345";  //"123 000 000 000 000 000 345"
-	y = "115085000000000000001";  //"115 085 000 000 000 000 001"  
-	assert(x - y == "7915000000000000344");
-
-}
-void TestCopy() {
+void TestMoveCopyOperators() {
 	BigInt x = "-2";
 	BigInt y = x;
 	assert(x == y);
@@ -214,44 +257,14 @@ void TestCopy() {
 	x++;
 	assert(y == k);
 	assert(x != k);
-}
 
-void TestOperators5() {
-	BigInt x = 1;
-	BigInt y = -x;
+	x = 1;
+	y = -x;
 	assert(y == -1);
 	assert(y == -x);
-}
-int main() {
 
-	TestOperators();
-	std::cout << "test 1 - operators : succeeded\n";
-
-	TestOperators2();
-	std::cout << "test 2 - operators : succeeded\n";
-
-	TestOperators3();
-	std::cout << "test 3 - operators : succeeded\n";
-
-	TestOperators4();
-	std::cout << "test 4 - operators : succeeded\n";
-
-	TestCopy();
-	{
-		unsigned long long int k = 999999999999909999;
-		BigInt x = k;
-		BigInt k2 = std::move(x);
-	}
-	std::cout << "test 5 - copy and move : succeeded\n";
-	TestSumAndDifference();
-	std::cout << "test 6 - sum and difference : succeeded\n";
-
-	BigInt w = "-999999999";
-	++w;
-	std::cout << "test 7 - increment decrement operators : succeeded\n";
-
-	TestMultiplication();
-	std::cout << "test 8 - multiplication : succeeded\n";
-	//system("PAUSE");
-	std::cout << "execution ended";
+	unsigned long long int n = 999999999999909999;
+	BigInt w = n;
+	BigInt w2 = std::move(w);
+	assert(w2 == 999999999999909999);
 }
