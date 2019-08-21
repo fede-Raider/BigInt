@@ -229,6 +229,10 @@ void TestMathsOperators() {
 	y = "123000000000000000345";
 	assert(x + y == 0);
 	assert(y + x == 0);
+
+	x = "-1000000000";
+	y = 1;
+	assert(x + y == "-999999999");
 }
 
 void TestMultiplication() {
