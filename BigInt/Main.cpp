@@ -155,6 +155,7 @@ void TestMathsOperators() {
 	BigInt y1 = 999999999;
 	assert(x1 + y1 == "1999999998");
 	assert(x1 - y1 == 0);
+	assert(y1 - x1 == 0);
 	
 	x = -999999999;
 	y = -1;
@@ -166,7 +167,16 @@ void TestMathsOperators() {
 	x1 = -999999999;
 	y1 = -999999999;
 	assert(x1 + y1 == "-1999999998");
+	assert(y1 + x1 == "-1999999998");
 	assert(x1 - y1 == "0");
+	assert(y1 - x1 == "0");
+
+	x1 = 999999999;
+	y1 = -999999999;
+	assert(x1 + y1 == "0");
+	assert(y1 + x1 == "0");
+	assert(x1 - y1 == "1999999998");
+	assert(y1 - x1 == "-1999999998");
 
 	x1 = -999999999;
 	y1 = 1;
