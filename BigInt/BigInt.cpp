@@ -404,8 +404,6 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 	BigInt quotient =BigInt();
 	BigInt remainder = BigInt();
 
-	quotient.positive = !(positive ^ divisor.positive);
-	remainder.positive = quotient.positive;
 
 	BigInt absDividend = abs();
 	BigInt absDivisor = divisor.abs();
@@ -474,23 +472,27 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 		{
 			remainder = tempRemainder;
 		}
+
+		quotient.positive = !(positive ^ divisor.positive);
+		remainder.positive = quotient.positive;
 		return quotient;
 
 	}
 	else if (absDivisor == absDividend)
 	{
-		if (quotient.positive)
-		{
-			++quotient;
-		}
-		else 
-		{
-			--quotient; //it only performs one more intermediate step (the sign inversion) which is reverted
-		}
+		++quotient;
+		quotient.positive = !(positive ^ divisor.positive);
+		remainder.positive = quotient.positive;
 		return quotient;
+		if (quotient.positive) { ++quotient; }else { --quotient; }
+
+		//it only performs one more intermediate step (the sign inversion) which is reverted
+
 	}
 	else
 	{
+		quotient.positive = !(positive ^ divisor.positive);
+		remainder.positive = quotient.positive;
 		remainder.number = absDividend.number;
 		quotient.CheckZero();
 		return quotient;

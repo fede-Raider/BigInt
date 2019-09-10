@@ -357,7 +357,7 @@ void TestDivision() {
 	x1 = "-5";
 	x2 = "1";
 	BigInt res = x1 / x2;
-	//assert(x1 / x2 == -5);  QUESTO FALLISCE
+	assert(x1 / x2 == -5);   // QUESTO FALLISCE
 	assert(x2 / x1 == 0);
 
 	x1 = "-5";
@@ -367,7 +367,8 @@ void TestDivision() {
 
 	x1 = "5";
 	x2 = "-1";
-	//assert(x1 / x2 == -5); QUESTO FALLISCE
+	//res=x1 / x2;
+	assert(x1 / x2 == -5);
 	assert(x2 / x1 == 0);
 
 	x1 = "14155455000000000039827325000000000000345";
