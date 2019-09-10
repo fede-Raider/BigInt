@@ -34,6 +34,8 @@ public:
 	BigInt operator-(const BigInt& rhs) const;
 	BigInt operator-() const;
 	BigInt operator*(const BigInt& rhs) const;
+	BigInt operator/(const BigInt& divisor) const;
+
 
 
 	//INCREMENT OPERATORS

@@ -386,6 +386,101 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 	result.CheckZero();
 	return result;
 }
+BigInt BigInt::operator/(const BigInt& divisor) const 
+{
+	BigInt quotient =BigInt();
+	BigInt remainder = BigInt();
+
+	quotient.positive = (positive && divisor.positive) || ((!positive) && (!divisor.positive));
+	remainder.positive = quotient.positive;
+
+	BigInt absDividend = abs();
+	BigInt absDivisor = divisor.abs();
+
+	if (absDivisor < absDividend)
+	{  
+		//there should be the division algorithm: we have only two cases, equal sizes or different ones
+		//let's save in the remainder the only dividend numbers starting from index 'absDivisor.number.size() - 1'
+		//size_t i = absDivisor.number.size() - 1;
+		//absDivisor.number[absDivisor.number.size() - 1];
+		BigInt tempRemainder = BigInt();
+		BigInt tempQuotient = BigInt();
+		BigInt tempQuotientInv = BigInt();
+
+		tempRemainder.number[0] = absDividend.number[absDivisor.number.size() - 1];
+		for (size_t i = absDivisor.number.size(); i < absDividend.number.size(); i++)
+		{
+			tempRemainder.number.push_back(absDividend.number[i]);
+		}
+		while (absDivisor <= tempRemainder.abs())
+		{
+
+			size_t i = tempRemainder.number.size() - 1;
+
+			lldiv_t intermediateResult;
+			long long tempDividend = tempRemainder.number[i];
+			uint_fast32_t tempDivisor = absDivisor.number[absDivisor.number.size() - 1];
+
+			intermediateResult.quot = tempDividend / tempDivisor;
+			intermediateResult.rem = tempDividend % tempDivisor;
+			div_t intermediateQuotToStore;
+			tempQuotientInv.number[0] = intermediateResult.quot;
+			while (i > 0)
+			{
+				--i;
+				tempDividend = intermediateResult.rem * BASE + tempRemainder.number[i];
+				intermediateResult.quot = tempDividend / tempDivisor;
+				intermediateResult.rem = tempDividend % tempDivisor;
+				intermediateQuotToStore = DivideNumberToBase(intermediateResult.quot);
+
+				tempQuotientInv.number[tempQuotient.number.size() - 1] += intermediateQuotToStore.quot;
+				tempQuotientInv.number.push_back(intermediateQuotToStore.rem);
+			}
+
+			std::vector<uint_fast32_t>::reverse_iterator it = tempQuotientInv.number.rbegin();
+			tempQuotient.number.at(0) = *it;
+			it++;
+			while (it != tempQuotientInv.number.rend())
+			{
+				tempQuotient.number.push_back(*it);
+				it++;
+			}
+			tempQuotient.positive = tempRemainder.positive;
+			quotient = quotient + tempQuotient;
+			tempRemainder = absDividend - quotient * absDivisor;
+		}
+		if (tempRemainder < 0)
+		{
+			--quotient;
+			remainder = tempRemainder + divisor;
+
+		}
+		else
+		{
+			remainder = tempRemainder;
+		}
+		return quotient;
+
+	}
+	else if (absDivisor == absDividend)
+	{
+		if (quotient.positive)
+		{
+			++quotient;
+		}
+		else 
+		{
+			--quotient; //it only performs one more intermediate step (the sign inversion) which is reverted
+		}
+		return quotient;
+	}
+	else
+	{
+		remainder.number = absDividend.number;
+		return quotient;
+	}
+
+}
 
 
 std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
