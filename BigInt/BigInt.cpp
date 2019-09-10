@@ -412,6 +412,8 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 		{
 			tempRemainder.number.push_back(absDividend.number[i]);
 		}
+		uint_fast32_t tempDivisor = absDivisor.number[absDivisor.number.size() - 1];
+
 		while (absDivisor <= tempRemainder.abs())
 		{
 
@@ -419,7 +421,6 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 
 			lldiv_t intermediateResult;
 			long long tempDividend = tempRemainder.number[i];
-			uint_fast32_t tempDivisor = absDivisor.number[absDivisor.number.size() - 1];
 
 			intermediateResult.quot = tempDividend / tempDivisor;
 			intermediateResult.rem = tempDividend % tempDivisor;
@@ -446,6 +447,7 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 				it++;
 			}
 			tempQuotient.positive = tempRemainder.positive;
+
 			quotient = quotient + tempQuotient;
 			tempRemainder = absDividend - quotient * absDivisor;
 		}
