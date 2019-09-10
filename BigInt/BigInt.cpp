@@ -445,7 +445,7 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 				intermediateResult.rem = tempDividend % tempDivisor;
 				intermediateQuotToStore = DivideNumberToBase(intermediateResult.quot);
 
-				tempQuotientInv.number[tempQuotient.number.size() - 1] += intermediateQuotToStore.quot;
+				tempQuotientInv.number[tempQuotientInv.number.size() - 1] += intermediateQuotToStore.quot;
 				tempQuotientInv.number.push_back(intermediateQuotToStore.rem);
 			}
 
