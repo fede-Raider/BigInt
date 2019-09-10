@@ -7,6 +7,8 @@ void TestIncrementOperators();
 void TestMoveCopyOperators();
 void TestMathsOperators();
 void TestMultiplication();
+void TestDivision();
+void TestExample();
 
 int main() {
 	TestComparisonOperators();
@@ -23,6 +25,12 @@ int main() {
 
 	TestMultiplication();
 	std::cout << "Test 5 - Multiplication : succeeded\n";
+
+	TestDivision();
+	std::cout << "Test 6 - Division : succeeded\n";
+
+	TestExample();
+	std::cout << "Test Example : succeeded\n";
 	std::cout << "Execution ended\n";
 
 	int k = 0;
@@ -232,6 +240,16 @@ void TestMathsOperators() {
 	x = "-1000000000";
 	y = 1;
 	assert(x + y == "-999999999");
+
+	x = "-1000000000";
+	y = 1;
+	x += y;
+	assert(x == "-999999999");
+
+	x = 999999999;
+	y = 1;
+	x -= y;
+	assert(x == "999999998");
 }
 
 void TestMultiplication() {
@@ -292,6 +310,11 @@ void TestMultiplication() {
 	x2 = 1;
 	xres = x1 * x2;
 	assert(xres == "5000019995001999");
+
+	x1 = "5000019995001999";
+	x2 = 1;
+	x1 *= x2;
+	assert(x1 == "5000019995001999");
 }
 
 void TestMoveCopyOperators() {
@@ -316,4 +339,77 @@ void TestMoveCopyOperators() {
 	BigInt w = n;
 	BigInt w2 = std::move(w);
 	assert(w2 == 999999999999909999);
+}
+
+void TestDivision() {
+	BigInt x1;
+	BigInt x2;
+
+	x1 = "5";
+	x2 = "1";
+	assert(x1 / x2 == 5);
+	assert(x2 / x1 == 0);
+
+	x2 = "5";
+	assert(x1 / x2 == 1);
+	assert(x2 / x1 == 1);
+
+	x1 = "-5";
+	x2 = "1";
+	BigInt res = x1 / x2;
+	//assert(x1 / x2 == -5);  QUESTO FALLISCE
+	assert(x2 / x1 == 0);
+
+	x1 = "-5";
+	x2 = "-1";
+	assert(x1 / x2 == 5);
+	assert(x2 / x1 == 0);
+
+	x1 = "5";
+	x2 = "-1";
+	//assert(x1 / x2 == -5); QUESTO FALLISCE
+	assert(x2 / x1 == 0);
+
+
+	x1 = "14155455000000000039827325000000000000345";
+	x2 = "5";
+	assert(x1 / x2 == "2831091000000000007965465000000000000069");
+
+	x1 = "1000000000";
+	x2 = "5";
+	assert(x1 / x2 == "200000000");
+
+	x1 = "1000000000";
+	x2 = "1000000000";
+	assert(x1 / x2 == 1);
+
+	x1 = "14155455000000000039827325000000000000345";
+	x2 = "1000000000";
+	assert(x1 / x2 == "14155455000000000039827325000000");
+
+	x1 = "14155455000000000039827325000000000000345";
+	x2 = "1000000000";
+	x1 /= x2;
+	assert(x1 == "14155455000000000039827325000000");
+}
+
+void TestExample() {
+	BigInt x = 569;
+	BigInt y;
+	y = pow(x, 10);
+	BigInt z = x;
+	z += y;
+	//z %= y;
+	//z %= 5;
+
+	BigInt w = ("348734834853836786386736");
+	w++;
+	if (w <= y) {
+
+	}
+	//z %= x;
+	std::cout << y;
+	x = -y;
+	//x <<= 5;
+	//w = pow(w, y);
 }

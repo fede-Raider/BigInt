@@ -1,6 +1,11 @@
 #pragma once
 #include <vector>
 
+struct div_ct {
+	uint_fast32_t quot;
+	uint_fast32_t rem;
+};
+
 class BigInt {
 	typedef uint_fast32_t ELEM_TYPE;
 	static const ELEM_TYPE BASE = 1000000000;
@@ -36,7 +41,10 @@ public:
 	BigInt operator*(const BigInt& rhs) const;
 	BigInt operator/(const BigInt& divisor) const;
 
-
+	BigInt operator+=(const BigInt& rhs);
+	BigInt operator-=(const BigInt& rhs);
+	BigInt operator*=(const BigInt& rhs);
+	BigInt operator/=(const BigInt& divisor);
 
 	//INCREMENT OPERATORS
 	BigInt& operator++();
@@ -52,7 +60,7 @@ public:
 	bool operator>(const BigInt& rhs) const;
 	bool operator>=(const BigInt& rhs) const;
 private:
-	div_t DivideNumberToBase(int_fast64_t i) const;
+	div_ct DivideNumberToBase(int_fast64_t i) const;
 	void CheckZero();
 	void RemoveUselessZero();
 	BigInt abs() const;

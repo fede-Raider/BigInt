@@ -131,8 +131,8 @@ bool BigInt::operator>=(const BigInt & rhs) const {
 	return !(*this < rhs);
 }
 
-div_t BigInt::DivideNumberToBase(int_fast64_t i) const {
-	div_t result;
+div_ct BigInt::DivideNumberToBase(int_fast64_t i) const {
+	div_ct result;
 	result.quot = i / BASE;
 	result.rem = i % BASE;
 	return result;
@@ -165,7 +165,7 @@ BigInt::BigInt(int i) : positive(i >= 0) {
 		i = -i;
 	}
 	do {
-		div_t dt = DivideNumberToBase(i);
+		div_ct dt = DivideNumberToBase(i);
 		number.push_back(dt.rem);
 		i = dt.quot;
 	} while (i != 0);
@@ -176,7 +176,7 @@ BigInt::BigInt(long i) : positive(i >= 0) {
 		i = -i;
 	}
 	do {
-		div_t dt = DivideNumberToBase(i);
+		div_ct dt = DivideNumberToBase(i);
 		number.push_back(dt.rem);
 		i = dt.quot;
 	} while (i != 0);
@@ -187,7 +187,7 @@ BigInt::BigInt(long long i) : positive(i >= 0) {
 		i = -i;
 	}
 	do {
-		div_t dt = DivideNumberToBase(i);
+		div_ct dt = DivideNumberToBase(i);
 		number.push_back(dt.rem);
 		i = dt.quot;
 	} while (i != 0);
@@ -195,7 +195,7 @@ BigInt::BigInt(long long i) : positive(i >= 0) {
 
 BigInt::BigInt(unsigned int i) : positive(true) {
 	do {
-		div_t dt = DivideNumberToBase(i);
+		div_ct dt = DivideNumberToBase(i);
 		number.push_back(dt.rem);
 		i = dt.quot;
 	} while (i != 0);
@@ -203,7 +203,7 @@ BigInt::BigInt(unsigned int i) : positive(true) {
 
 BigInt::BigInt(unsigned long i) : positive(true) {
 	do {
-		div_t dt = DivideNumberToBase(i);
+		div_ct dt = DivideNumberToBase(i);
 		number.push_back(dt.rem);
 		i = dt.quot;
 	} while (i != 0);
@@ -211,7 +211,7 @@ BigInt::BigInt(unsigned long i) : positive(true) {
 
 BigInt::BigInt(unsigned long long i) : positive(true) {
 	do {
-		div_t dt = DivideNumberToBase(i);
+		div_ct dt = DivideNumberToBase(i);
 		number.push_back(dt.rem);
 		i = dt.quot;
 	} while (i != 0);
@@ -269,19 +269,22 @@ BigInt BigInt::operator+(const BigInt & rhs) const {
 		BigInt result;
 		result.positive = positive;
 		result.number.pop_back();
-		div_t dt;
+		div_ct dt;
 		dt.quot = 0;
 		for (size_t i = 0; dt.quot || (i < std::max(number.size(), rhs.number.size())); ++i) {
 			dt = DivideNumberToBase(dt.quot + (i < number.size() ? number[i] : 0) + (i < rhs.number.size() ? rhs.number[i] : 0));
 			result.number.push_back(dt.rem);
 		}
-		//FORSE INUTILI
 		result.RemoveUselessZero();
 		result.CheckZero();
-		//
 		return result;
 	}
 	return *this - (-rhs);
+}
+
+BigInt BigInt::operator+=(const BigInt & rhs) {
+	*this = *this + rhs;
+	return *this;
 }
 
 BigInt BigInt::operator-(const BigInt & rhs) const {
@@ -317,6 +320,10 @@ BigInt BigInt::operator-(const BigInt & rhs) const {
 	return *this + (-rhs);
 }
 
+BigInt BigInt::operator-=(const BigInt & rhs) {
+	*this = *this - rhs;
+	return *this;
+}
 
 BigInt BigInt::operator-() const {
 	BigInt result = *this;
@@ -330,8 +337,8 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 	//auto it = number.begin(); it != number.end(); it++
 	//auto rhsit = rhs.number.begin(); rhsit != rhs.number.end(); rhsit++
 	//(*rhsit) *(*it)
-	div_t dt;
-	div_t dt2;
+	div_ct dt;
+	div_ct dt2;
 	for (size_t i = 0; i < number.size();i++) {
 
 		for (size_t j = 0; j < rhs.number.size(); j++) {
@@ -386,12 +393,18 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 	result.CheckZero();
 	return result;
 }
+
+BigInt BigInt::operator*=(const BigInt & rhs) {
+	*this = *this * rhs;
+	return *this;
+}
+
 BigInt BigInt::operator/(const BigInt& divisor) const 
 {
 	BigInt quotient =BigInt();
 	BigInt remainder = BigInt();
 
-	quotient.positive = (positive && divisor.positive) || ((!positive) && (!divisor.positive));
+	quotient.positive = !(positive ^ divisor.positive);
 	remainder.positive = quotient.positive;
 
 	BigInt absDividend = abs();
@@ -423,7 +436,7 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 
 			intermediateResult.quot = tempDividend / tempDivisor;
 			intermediateResult.rem = tempDividend % tempDivisor;
-			div_t intermediateQuotToStore;
+			div_ct intermediateQuotToStore;
 			tempQuotientInv.number[0] = intermediateResult.quot;
 			while (i > 0)
 			{
@@ -477,11 +490,16 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 	else
 	{
 		remainder.number = absDividend.number;
+		quotient.CheckZero();
 		return quotient;
 	}
 
 }
 
+BigInt BigInt::operator/=(const BigInt & rhs) {
+	*this = *this / rhs;
+	return *this;
+}
 
 std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
 	if (!bi.positive) {
@@ -500,7 +518,6 @@ std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
 	return s;
 }
 
-//NON FA NULLA
 BigInt pow(const BigInt& base, const BigInt& exp) {
 	if (exp.positive)
 	{
