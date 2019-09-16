@@ -1,6 +1,7 @@
 #include "BigInt.h"
 #include <iomanip>
 #include <algorithm>
+#include <iostream>
 
 BigInt::BigInt() : positive(true) {
 	number.push_back(0);
@@ -424,10 +425,22 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 			tempRemainder.number.push_back(absDividend.number[i]);
 		}
 		uint_fast32_t tempDivisor = absDivisor.number[absDivisor.number.size() - 1];
-
+		int approximationCntr = 0;
 		while (absDivisor <= tempRemainder.abs())
 		{
-
+			if(approximationCntr>0)
+			{ 
+			
+				size_t sizeToReach = tempRemainder.number.size() - absDivisor.number.size() + 1;
+			
+				while (tempRemainder.number.size() != sizeToReach)
+			
+				{
+				
+					tempRemainder.number.erase(tempRemainder.number.cbegin());
+			
+				}
+			}
 			size_t i = tempRemainder.number.size() - 1;
 
 			lldiv_t intermediateResult;
@@ -460,8 +473,14 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 			tempQuotient.positive = tempRemainder.positive;
 
 			quotient = quotient + tempQuotient;
-			tempRemainder = absDividend - quotient * absDivisor;
+			tempRemainder.number.clear();
+			tempRemainder.positive = true;
+			tempRemainder = - quotient * absDivisor; //questa operazione non restituisce il risultato numerico corretto
+			tempRemainder += absDividend;
+			++approximationCntr;
+
 		}
+		std::cout << approximationCntr<<std::endl; //questa riga stampa il numero di approssimazioni fatte, momentaneamente
 		if (tempRemainder < 0)
 		{
 			--quotient;
