@@ -228,8 +228,7 @@ BigInt::BigInt(const std::string& s) {
 		if (s.size() % DIGIT_COUNT != 0) {
 			number.push_back(atoi(s.substr(0, s.size() % DIGIT_COUNT).c_str()));
 		}
-	}
-	else {
+	} else {
 		if ((s.size() - 1) % DIGIT_COUNT != 0) {
 			number.push_back(atoi(s.substr(1, (s.size() - 1) % DIGIT_COUNT).c_str()));
 		}
@@ -255,12 +254,11 @@ BigInt::BigInt(const BigInt&& bi){
 	positive = bi.positive;
 }
 
-const BigInt & BigInt::operator=(const BigInt&& bi){
+const BigInt & BigInt::operator=(const BigInt&& bi) {
 	number = std::move(bi.number);
 	positive = bi.positive;
 	return *this;
 }
-
 
 BigInt BigInt::operator+(const BigInt & rhs) const {
 	if (positive == rhs.positive) {
@@ -326,6 +324,7 @@ BigInt BigInt::operator-() const {
 	result.positive = !positive;
 	return result;
 }
+
 BigInt BigInt::operator*(const BigInt& rhs) const {
 	BigInt result;
 	result.positive = !(positive ^ rhs.positive);
@@ -368,8 +367,7 @@ BigInt BigInt::operator*=(const BigInt & rhs) {
 	return *this;
 }
 
-BigInt BigInt::operator/(const BigInt& divisor) const
-{
+BigInt BigInt::operator/(const BigInt& divisor) const {
 	BigInt Q, R, D = (divisor.positive ? divisor : -divisor), N = (positive ? *this : -*this);
 	Q.number.resize(N.number.size(), 0);
 	for (size_t i = N.number.size(); i > 0; --i) {
@@ -425,8 +423,7 @@ std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
 }
 
 BigInt pow(const BigInt& base, const BigInt& exp) {
-	if (exp.positive)
-	{
+	if (exp.positive) {
 		BigInt result(1);
 		BigInt expCursor(0);
 		while (expCursor != exp) {
@@ -435,10 +432,8 @@ BigInt pow(const BigInt& base, const BigInt& exp) {
 			++expCursor;
 		}
 
-
 		return result;
-	}
-	else {
+	} else {
 		//impossible: undefined in integers set
 		BigInt result(0);
 		return result;
