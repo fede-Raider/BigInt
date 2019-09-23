@@ -22,6 +22,7 @@ class BigInt {
 	static const ELEM_TYPE DIGIT_COUNT = 9;
 
 	friend std::ostream& operator<<(std::ostream& s, const BigInt& n);
+	friend std::istream& operator>>(std::istream& s, BigInt &n);
 	friend BigInt pow(const BigInt& base, const BigInt& exp);
 public:
 
@@ -49,12 +50,14 @@ public:
 	BigInt operator-(const BigInt& rhs) const;
 	BigInt operator-() const;
 	BigInt operator*(const BigInt& rhs) const;
-	BigInt operator/(const BigInt& divisor) const;
+	BigInt operator/(const BigInt& rhs) const;
+	//BigInt operator%(const BigInt& rhs) const;
 
 	const BigInt& operator+=(const BigInt& rhs);
 	const BigInt& operator-=(const BigInt& rhs);
 	const BigInt& operator*=(const BigInt& rhs);
-	const BigInt& operator/=(const BigInt& divisor);
+	const BigInt& operator/=(const BigInt& rhs);
+	//const BigInt& operator%=(const BigInt& rhs);
 
 	//INCREMENT OPERATORS
 	const BigInt& operator++();

@@ -417,4 +417,8 @@ void TestExample() {
 	x = -y;
 	//x <<= 5;
 	//w = pow(w, y);
+
+	BigInt testcin;
+	std::cin >> testcin;
+	std::cout << testcin;
 }

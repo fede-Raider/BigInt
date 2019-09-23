@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <iostream>
+#include <string>
 
 BigInt::BigInt() : positive(true) {
 	number.push_back(0);
@@ -419,6 +420,13 @@ std::ostream& operator<<(std::ostream &s, const BigInt& bi) {
 			s << std::setfill('0') << std::setw(BigInt::DIGIT_COUNT) << bi.number[i-1];
 		}
 	}
+	return s;
+}
+
+std::istream & operator>>(std::istream& s, BigInt& n){
+	std::string str;
+	s >> str;
+	n = str;
 	return s;
 }
 
