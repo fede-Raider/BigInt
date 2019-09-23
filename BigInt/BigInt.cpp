@@ -52,7 +52,7 @@ BigInt & BigInt::operator--() {
 			--(*it);
 			if (*it > BASE) {
 				if((it + 1) != number.end()){
-					*it = 999999999;
+					*it = BASE - 1;
 					it++;
 				} else {
 					positive = !positive;
@@ -400,123 +400,40 @@ BigInt BigInt::operator*=(const BigInt & rhs) {
 	return *this;
 }
 
-BigInt BigInt::operator/(const BigInt& divisor) const 
+BigInt BigInt::operator/(const BigInt& divisor) const
 {
-	BigInt quotient =BigInt();
-	BigInt remainder = BigInt();
+	BigInt Q, R, D = (divisor.positive ? divisor : -divisor), N = (positive ? *this : -*this);
+	Q.number.resize(N.number.size(), 0);
+	for (int i = (int)N.number.size() - 1; i >= 0; --i) {
+		R.number.insert(R.number.begin(), N.number[i]);
+		R.RemoveUselessZero();
 
+		ELEM_TYPE min = 0, max = BASE - 1;
+		while (max > min) {
+			ELEM_TYPE avg = max + min;
+			div_ct dt;
+			dt.quot = avg / 2;
+			dt.rem = avg % 2;
 
-	BigInt absDividend = abs();
-	BigInt absDivisor = divisor.abs();
-
-	if (absDivisor < absDividend)
-	{  
-		//there should be the division algorithm: we have only two cases, equal sizes or different ones
-		//let's save in the remainder the only dividend numbers starting from index 'absDivisor.number.size() - 1'
-		//size_t i = absDivisor.number.size() - 1;
-		//absDivisor.number[absDivisor.number.size() - 1];
-		BigInt tempRemainder = BigInt();
-		BigInt tempQuotient = BigInt();
-		BigInt tempQuotientInv = BigInt();
-
-		tempRemainder.number[0] = absDividend.number[absDivisor.number.size() - 1];
-		for (size_t i = absDivisor.number.size(); i < absDividend.number.size(); i++)
-		{
-			tempRemainder.number.push_back(absDividend.number[i]);
-		}
-		uint_fast32_t tempDivisor = absDivisor.number[absDivisor.number.size() - 1];
-		int approximationCntr = 0;
-		while (absDivisor <= tempRemainder.abs())
-		{
-			if(approximationCntr>0)
-			{ 
-			
-				size_t sizeToReach = tempRemainder.number.size() - absDivisor.number.size() + 1;
-			
-				while (tempRemainder.number.size() != sizeToReach)
-			
-				{
-				
-					tempRemainder.number.erase(tempRemainder.number.cbegin());
-			
-				}
+			avg = dt.rem ? (dt.quot + 1) : dt.quot;
+			BigInt prod = D * avg;
+			if (R == prod) {
+				min = avg;
+				break;
+			} else if (R > prod) {
+				min = avg;
+			} else {
+				max = avg - 1;
 			}
-			size_t i = tempRemainder.number.size() - 1;
-
-			lldiv_t intermediateResult;
-			long long tempDividend = tempRemainder.number[i];
-
-			intermediateResult.quot = tempDividend / tempDivisor;
-			intermediateResult.rem = tempDividend % tempDivisor;
-			div_ct intermediateQuotToStore;
-			tempQuotientInv.number[0] = intermediateResult.quot;
-			while (i > 0)
-			{
-				--i;
-				tempDividend = intermediateResult.rem * BASE + tempRemainder.number[i];
-				intermediateResult.quot = tempDividend / tempDivisor;
-				intermediateResult.rem = tempDividend % tempDivisor;
-				intermediateQuotToStore = DivideNumberToBase(intermediateResult.quot);
-
-				tempQuotientInv.number[tempQuotientInv.number.size() - 1] += intermediateQuotToStore.quot;
-				tempQuotientInv.number.push_back(intermediateQuotToStore.rem);
-			}
-
-			std::vector<uint_fast32_t>::reverse_iterator it = tempQuotientInv.number.rbegin();
-			tempQuotient.number.at(0) = *it;
-			it++;
-			while (it != tempQuotientInv.number.rend())
-			{
-				tempQuotient.number.push_back(*it);
-				it++;
-			}
-			tempQuotient.positive = tempRemainder.positive;
-
-			quotient = quotient + tempQuotient;
-			tempRemainder.number.clear();
-			tempRemainder.positive = true;
-			tempRemainder = - quotient * absDivisor; //questa operazione non restituisce il risultato numerico corretto
-			tempRemainder += absDividend;
-			++approximationCntr;
-
 		}
-		std::cout << approximationCntr<<std::endl; //questa riga stampa il numero di approssimazioni fatte, momentaneamente
-		if (tempRemainder < 0)
-		{
-			--quotient;
-			remainder = tempRemainder + divisor;
+		ELEM_TYPE cnt = min;
 
-		}
-		else
-		{
-			remainder = tempRemainder;
-		}
-
-		quotient.positive = !(positive ^ divisor.positive);
-		remainder.positive = quotient.positive;
-		return quotient;
-
+		R -= D * cnt;
+		Q.number[i] += cnt;
 	}
-	else if (absDivisor == absDividend)
-	{
-		++quotient;
-		quotient.positive = !(positive ^ divisor.positive);
-		remainder.positive = quotient.positive;
-		return quotient;
-		if (quotient.positive) { ++quotient; }else { --quotient; }
-
-		//it only performs one more intermediate step (the sign inversion) which is reverted
-
-	}
-	else
-	{
-		quotient.positive = !(positive ^ divisor.positive);
-		remainder.positive = quotient.positive;
-		remainder.number = absDividend.number;
-		quotient.CheckZero();
-		return quotient;
-	}
-
+	Q.RemoveUselessZero();
+	Q.positive = (Q.number.size() == 1 && Q.number[0] == 0) ? true : (positive == divisor.positive);
+	return Q;
 }
 
 BigInt BigInt::operator/=(const BigInt & rhs) {
