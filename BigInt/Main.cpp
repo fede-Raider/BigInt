@@ -396,8 +396,6 @@ void TestDivision() {
 	x2 = "1000000000";
 	x1 /= x2;
 	assert(x1 == "14155455000000000039827325000000");
-
-
 }
 
 void TestExample() {

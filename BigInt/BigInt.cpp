@@ -132,11 +132,8 @@ bool BigInt::operator>=(const BigInt & rhs) const {
 	return !(*this < rhs);
 }
 
-div_ct BigInt::DivideNumberToBase(int_fast64_t i) const {
-	div_ct result;
-	result.quot = i / BASE;
-	result.rem = i % BASE;
-	return result;
+div_ct BigInt::DivideNumberToBase(int_fast64_t n) const {
+	return div_ct::Divide(n, BASE);
 }
 
 void BigInt::CheckZero() {
@@ -335,22 +332,16 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 	BigInt result;
 	result.positive = !(positive ^ rhs.positive);
 
-	//auto it = number.begin(); it != number.end(); it++
-	//auto rhsit = rhs.number.begin(); rhsit != rhs.number.end(); rhsit++
-	//(*rhsit) *(*it)
 	div_ct dt;
 	div_ct dt2;
 	for (size_t i = 0; i < number.size();i++) {
-
 		for (size_t j = 0; j < rhs.number.size(); j++) {
 			dt.quot = 0;
 			dt.rem = 0;
 			dt = DivideNumberToBase(((int_fast64_t)number[i]) * ((int_fast64_t)rhs.number[j]));
 			if (i + j >= result.number.size()) {
 				result.number.push_back(dt.rem);
-			}
-			else
-			{
+			} else {
 				result.number[i + j] += dt.rem;
 				dt2.quot = 0;
 				dt2.rem = 0;
@@ -359,19 +350,15 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 					result.number[i + j] = dt2.rem;
 					if (i + j + 1 >= result.number.size()) {
 						result.number.push_back(dt2.quot);
-					}
-					else {
+					} else {
 						result.number[i + j + 1] += dt2.quot;
-
 					}
 				}
 			}
 			if (dt.quot != 0) {
-
 				if (i + j + 1 >= result.number.size()) {
 					result.number.push_back(dt.quot);
-				}
-				else {
+				} else {
 					result.number[i + j + 1] += dt.quot;
 					dt2.quot = 0;
 					dt2.rem = 0;
@@ -380,10 +367,8 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 						result.number[i + j + 1] = dt2.rem;
 						if (i + j + 2 >= result.number.size()) {
 							result.number.push_back(dt2.quot);
-						}
-						else {
+						} else {
 							result.number[i + j + 2] += dt2.quot;
-
 						}
 					}
 				}
@@ -411,9 +396,7 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 		ELEM_TYPE min = 0, max = BASE - 1;
 		while (max > min) {
 			ELEM_TYPE avg = max + min;
-			div_ct dt;
-			dt.quot = avg / 2;
-			dt.rem = avg % 2;
+			div_ct dt = div_ct::Divide(avg, 2);
 
 			avg = dt.rem ? (dt.quot + 1) : dt.quot;
 			BigInt prod = D * avg;

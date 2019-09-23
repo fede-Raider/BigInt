@@ -1,10 +1,19 @@
 #pragma once
 #include <vector>
 
-struct div_ct {
-	uint_fast32_t quot;
-	uint_fast32_t rem;
-};
+namespace {
+	struct div_ct {
+		uint_fast32_t quot;
+		uint_fast32_t rem;
+
+		static div_ct Divide(int_fast64_t n, int_fast64_t d) {
+			div_ct result;
+			result.quot = n / d;
+			result.rem = n % d;
+			return result;
+		}
+	};
+}
 
 class BigInt {
 	typedef uint_fast32_t ELEM_TYPE;
@@ -60,7 +69,7 @@ public:
 	bool operator>(const BigInt& rhs) const;
 	bool operator>=(const BigInt& rhs) const;
 private:
-	div_ct DivideNumberToBase(int_fast64_t i) const;
+	div_ct DivideNumberToBase(int_fast64_t n) const;
 	void CheckZero();
 	void RemoveUselessZero();
 	BigInt abs() const;
