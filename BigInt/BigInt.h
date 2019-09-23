@@ -40,7 +40,7 @@ public:
 	BigInt(const BigInt& bi);
 	const BigInt& operator=(const BigInt& bi);
 
-	//MOVE (?)
+	//MOVE
 	BigInt(const BigInt&& bi);
 	const BigInt& operator=(const BigInt&& bi);
 
@@ -69,6 +69,12 @@ public:
 	bool operator<=(const BigInt& rhs) const;
 	bool operator>(const BigInt& rhs) const;
 	bool operator>=(const BigInt& rhs) const;
+
+	//BITWISE OPERATORS
+	//BigInt operator&(const BigInt& other) const;
+	//BigInt operator|(const BigInt& other) const;
+	//BigInt operator<<=() const;
+	//BigInt operator>>=() const;
 private:
 	div_ct DivideNumberToBase(PRODUCT_TYPE n) const;
 	void CheckZero();
