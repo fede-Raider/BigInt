@@ -7,7 +7,7 @@ BigInt::BigInt() : positive(true) {
 	number.push_back(0);
 }
 
-BigInt& BigInt::operator++() {
+const BigInt& BigInt::operator++() {
 	if (positive) {
 		auto it = number.begin();
 		while (it != number.end()) {
@@ -40,7 +40,7 @@ BigInt BigInt::operator++(int) {
 	return result;
 }
 
-BigInt & BigInt::operator--() {
+const BigInt& BigInt::operator--() {
 	if (!positive) {
 		positive = !positive;
 		(*this).operator++();
@@ -278,7 +278,7 @@ BigInt BigInt::operator+(const BigInt & rhs) const {
 	return *this - (-rhs);
 }
 
-BigInt BigInt::operator+=(const BigInt & rhs) {
+const BigInt& BigInt::operator+=(const BigInt & rhs) {
 	*this = *this + rhs;
 	return *this;
 }
@@ -314,7 +314,7 @@ BigInt BigInt::operator-(const BigInt & rhs) const {
 	return *this + (-rhs);
 }
 
-BigInt BigInt::operator-=(const BigInt & rhs) {
+const BigInt& BigInt::operator-=(const BigInt & rhs) {
 	*this = *this - rhs;
 	return *this;
 }
@@ -362,7 +362,7 @@ BigInt BigInt::operator*(const BigInt& rhs) const {
 	return result;
 }
 
-BigInt BigInt::operator*=(const BigInt & rhs) {
+const BigInt& BigInt::operator*=(const BigInt & rhs) {
 	*this = *this * rhs;
 	return *this;
 }
@@ -400,7 +400,7 @@ BigInt BigInt::operator/(const BigInt& divisor) const {
 	return Q;
 }
 
-BigInt BigInt::operator/=(const BigInt & rhs) {
+const BigInt& BigInt::operator/=(const BigInt & rhs) {
 	*this = *this / rhs;
 	return *this;
 }

@@ -51,15 +51,15 @@ public:
 	BigInt operator*(const BigInt& rhs) const;
 	BigInt operator/(const BigInt& divisor) const;
 
-	BigInt operator+=(const BigInt& rhs);
-	BigInt operator-=(const BigInt& rhs);
-	BigInt operator*=(const BigInt& rhs);
-	BigInt operator/=(const BigInt& divisor);
+	const BigInt& operator+=(const BigInt& rhs);
+	const BigInt& operator-=(const BigInt& rhs);
+	const BigInt& operator*=(const BigInt& rhs);
+	const BigInt& operator/=(const BigInt& divisor);
 
 	//INCREMENT OPERATORS
-	BigInt& operator++();
+	const BigInt& operator++();
 	BigInt operator++ (int);
-	BigInt& operator--();
+	const BigInt& operator--();
 	BigInt operator-- (int);
 
 	//COMPARISON OPERATORS
