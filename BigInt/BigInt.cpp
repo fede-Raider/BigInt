@@ -218,7 +218,7 @@ BigInt::BigInt(unsigned long long i) : positive(true) {
 
 BigInt::BigInt(const std::string& s) {
 	positive = s[0] != '-' ? true : false;
-	int slot = s.size() / DIGIT_COUNT + 1;
+	size_t slot = s.size() / DIGIT_COUNT + 1;
 
 	number.reserve(slot);
 	for (size_t i = 1; i < slot; ++i) {

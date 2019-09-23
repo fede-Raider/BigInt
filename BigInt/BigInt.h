@@ -3,8 +3,8 @@
 
 namespace {
 	struct div_ct {
-		uint_fast32_t quot;
-		uint_fast32_t rem;
+		uint_fast64_t quot;
+		uint_fast64_t rem;
 
 		static div_ct Divide(int_fast64_t n, int_fast64_t d) {
 			div_ct result;
@@ -76,8 +76,9 @@ public:
 	//BITWISE OPERATORS
 	//BigInt operator&(const BigInt& other) const;
 	//BigInt operator|(const BigInt& other) const;
-	//BigInt operator<<=() const;
-	//BigInt operator>>=() const;
+	//BigInt operator<<(const BigInt &rhs);
+	//BigInt operator<<(const BigInt &rhs);
+
 private:
 	div_ct DivideNumberToBase(PRODUCT_TYPE n) const;
 	void CheckZero();
