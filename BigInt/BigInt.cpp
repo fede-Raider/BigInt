@@ -132,7 +132,7 @@ bool BigInt::operator>=(const BigInt & rhs) const {
 	return !(*this < rhs);
 }
 
-div_ct BigInt::DivideNumberToBase(int_fast64_t n) const {
+div_ct BigInt::DivideNumberToBase(PRODUCT_TYPE n) const {
 	return div_ct::Divide(n, BASE);
 }
 
@@ -297,13 +297,11 @@ BigInt BigInt::operator-(const BigInt & rhs) const {
 			//dt.quot || (i < std::max(number.size(), rhs.number.size()))
 			for (size_t i = 0; dt.quot || (i < number.size()); ++i) {
 				dt.rem = (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0) - dt.quot;
-				//
 				if (dt.rem >= 0) {
 					result.number.push_back(dt.rem);
 					dt.quot = 0;
-				}
-				else {
-					result.number.push_back(BASE  + dt.rem ); // quando dt.rem è minore di 0, il suo valore numerico è quello che devo sottrarre a 1 000 000 000
+				} else {
+					result.number.push_back(BASE  + dt.rem); // quando dt.rem è minore di 0, il suo valore numerico è quello che devo sottrarre a 1 000 000 000
 					dt.quot = 1;
 				}
 				//dt = DivideNumberToBase(-dt.quot + (i < number.size() ? number[i] : 0) - (i < rhs.number.size() ? rhs.number[i] : 0));
@@ -331,49 +329,34 @@ BigInt BigInt::operator-() const {
 BigInt BigInt::operator*(const BigInt& rhs) const {
 	BigInt result;
 	result.positive = !(positive ^ rhs.positive);
+	result.number.resize(number.size() + rhs.number.size(), 0);
 
-	div_ct dt;
-	div_ct dt2;
-	for (size_t i = 0; i < number.size();i++) {
-		for (size_t j = 0; j < rhs.number.size(); j++) {
-			dt.quot = 0;
-			dt.rem = 0;
-			dt = DivideNumberToBase(((int_fast64_t)number[i]) * ((int_fast64_t)rhs.number[j]));
-			if (i + j >= result.number.size()) {
-				result.number.push_back(dt.rem);
-			} else {
-				result.number[i + j] += dt.rem;
-				dt2.quot = 0;
-				dt2.rem = 0;
-				if (result.number[i + j] > BASE) {
-					dt2 = DivideNumberToBase(result.number[i + j]);
-					result.number[i + j] = dt2.rem;
-					if (i + j + 1 >= result.number.size()) {
-						result.number.push_back(dt2.quot);
-					} else {
-						result.number[i + j + 1] += dt2.quot;
-					}
-				}
+	PRODUCT_TYPE carry = 0;
+	size_t digit = 0;
+	for (;; ++digit){
+		div_ct dt = div_ct::Divide(carry, BASE);
+		carry = dt.quot;
+		result.number[digit] = static_cast<ELEM_TYPE>(dt.rem);
+
+		bool found = false;
+		for (size_t i = digit < rhs.number.size() ? 0 : digit - rhs.number.size() + 1; i < number.size() && i <= digit; ++i) {
+			PRODUCT_TYPE pval = result.number[digit] + number[i] * static_cast<PRODUCT_TYPE>(rhs.number[digit - i]);
+			if (pval >= BASE || pval <= -(int_fast32_t)BASE) {
+				div_ct dt = div_ct::Divide(pval, BASE);
+				carry += dt.quot;
+				pval = dt.rem;
 			}
-			if (dt.quot != 0) {
-				if (i + j + 1 >= result.number.size()) {
-					result.number.push_back(dt.quot);
-				} else {
-					result.number[i + j + 1] += dt.quot;
-					dt2.quot = 0;
-					dt2.rem = 0;
-					if (result.number[i + j + 1] > BASE) {
-						dt2 = DivideNumberToBase(result.number[i + j + 1]);
-						result.number[i + j + 1] = dt2.rem;
-						if (i + j + 2 >= result.number.size()) {
-							result.number.push_back(dt2.quot);
-						} else {
-							result.number[i + j + 2] += dt2.quot;
-						}
-					}
-				}
-			}
+			result.number[digit] = static_cast<ELEM_TYPE>(pval);
+			found = true;
 		}
+		if (!found) {
+			break;
+		}
+	}
+	for (; carry > 0; ++digit) {
+		div_ct dt = div_ct::Divide(carry, BASE);
+		result.number[digit] = static_cast<ELEM_TYPE>(dt.rem);
+		carry = dt.quot;
 	}
 	result.RemoveUselessZero();
 	result.CheckZero();
@@ -389,8 +372,8 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 {
 	BigInt Q, R, D = (divisor.positive ? divisor : -divisor), N = (positive ? *this : -*this);
 	Q.number.resize(N.number.size(), 0);
-	for (int i = (int)N.number.size() - 1; i >= 0; --i) {
-		R.number.insert(R.number.begin(), N.number[i]);
+	for (size_t i = N.number.size(); i > 0; --i) {
+		R.number.insert(R.number.begin(), N.number[i - 1]);
 		R.RemoveUselessZero();
 
 		ELEM_TYPE min = 0, max = BASE - 1;
@@ -412,7 +395,7 @@ BigInt BigInt::operator/(const BigInt& divisor) const
 		ELEM_TYPE cnt = min;
 
 		R -= D * cnt;
-		Q.number[i] += cnt;
+		Q.number[i - 1] += cnt;
 	}
 	Q.RemoveUselessZero();
 	Q.positive = (Q.number.size() == 1 && Q.number[0] == 0) ? true : (positive == divisor.positive);

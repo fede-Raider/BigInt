@@ -17,6 +17,7 @@ namespace {
 
 class BigInt {
 	typedef uint_fast32_t ELEM_TYPE;
+	typedef uint_fast64_t PRODUCT_TYPE;
 	static const ELEM_TYPE BASE = 1000000000;
 	static const ELEM_TYPE DIGIT_COUNT = 9;
 
@@ -69,13 +70,11 @@ public:
 	bool operator>(const BigInt& rhs) const;
 	bool operator>=(const BigInt& rhs) const;
 private:
-	div_ct DivideNumberToBase(int_fast64_t n) const;
+	div_ct DivideNumberToBase(PRODUCT_TYPE n) const;
 	void CheckZero();
 	void RemoveUselessZero();
 	BigInt abs() const;
 private:
-	// std::vector<int> number;
-	// std::vector<uint32_t> number;
-	std::vector<uint_fast32_t> number;
+	std::vector<ELEM_TYPE> number;
 	bool positive = true;
 };
