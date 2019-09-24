@@ -19,6 +19,7 @@ class BigInt {
 	typedef uint_fast32_t ELEM_TYPE;
 	typedef uint_fast64_t PRODUCT_TYPE;
 	static const ELEM_TYPE BASE = 1000000000;
+	//static const ELEM_TYPE BASE = 2147483647;
 	static const ELEM_TYPE DIGIT_COUNT = 9;
 
 	friend std::ostream& operator<<(std::ostream& s, const BigInt& n);
