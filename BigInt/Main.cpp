@@ -2,6 +2,7 @@
 #include "BigInt.h"
 #include <assert.h> 
 
+void TestConstruction();
 void TestComparisonOperators();
 void TestIncrementOperators();
 void TestMoveCopyOperators();
@@ -11,6 +12,9 @@ void TestDivision();
 void TestExample();
 
 int main() {
+	TestConstruction();
+	std::cout << "Test 0 - Construction : succeeded\n";
+
 	TestComparisonOperators();
 	std::cout << "Test 1 - Comparison operators : succeeded\n";
 
@@ -35,6 +39,20 @@ int main() {
 
 	int k = 0;
 	std::cin >> k;
+}
+
+void TestConstruction() {
+	BigInt x = "0";
+	assert(x == 0);
+
+	x = "";
+	assert(x == 0);
+
+	x = "-0";
+	assert(x == 0);
+
+	x = "-";
+	assert(x == 0);
 }
 
 void TestComparisonOperators() {
