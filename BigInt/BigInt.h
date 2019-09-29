@@ -3,8 +3,8 @@
 
 namespace {
 	struct div_ct {
-		uint_fast64_t quot;
-		uint_fast64_t rem;
+		uint64_t quot;
+		uint64_t rem;
 
 		static div_ct Divide(int_fast64_t n, int_fast64_t d) {
 			div_ct result;
@@ -16,11 +16,10 @@ namespace {
 }
 
 class BigInt {
-	typedef uint_fast32_t ELEM_TYPE;
-	typedef uint_fast64_t PRODUCT_TYPE;
-	static const ELEM_TYPE BASE = 1000000000;
-	//static const ELEM_TYPE BASE = 2147483647;
-	static const ELEM_TYPE DIGIT_COUNT = 9;
+	typedef uint32_t ELEM_TYPE;
+	typedef uint64_t DOUBLE_ELEM_TYPE;
+	static const DOUBLE_ELEM_TYPE BASE = 4294967296;
+	static const short int ELEM_BITS = 32;
 
 	friend std::ostream& operator<<(std::ostream& s, const BigInt& n);
 	friend std::istream& operator>>(std::istream& s, BigInt &n);
@@ -58,7 +57,7 @@ public:
 	const BigInt& operator-=(const BigInt& rhs);
 	const BigInt& operator*=(const BigInt& rhs);
 	const BigInt& operator/=(const BigInt& rhs);
-	//const BigInt& operator%=(const BigInt& rhs);
+	const BigInt& operator%=(const BigInt& rhs);
 
 	//INCREMENT OPERATORS
 	const BigInt& operator++();
@@ -80,16 +79,16 @@ public:
 	BigInt operator<<(const BigInt &rhs) const;
 	BigInt operator>>(const BigInt &rhs)const;
 
+	BigInt operator>>=(const BigInt &rhs);
+	BigInt operator<<=(const BigInt &rhs);
+
 private:
-	div_ct DivideNumberToBase(PRODUCT_TYPE n) const;
+	std::pair<BigInt, BigInt> divmod (const BigInt& divisor) const;
 	void CheckZero();
 	void RemoveUselessZero();
-	void ShiftNumbersLeft(unsigned short int shiftCount);
-	void IntToBin();
+	std::string ToString() const;
 	BigInt abs() const;
 private:
 	std::vector<ELEM_TYPE> number;
-	std::vector<bool> binaryRepresentation;
 	bool positive = true;
-	bool isShiftable = true;
 };
