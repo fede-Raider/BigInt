@@ -18,8 +18,8 @@ namespace {
 class BigInt {
 	typedef uint32_t ELEM_TYPE;
 	typedef uint64_t DOUBLE_ELEM_TYPE;
-	static const DOUBLE_ELEM_TYPE BASE = 4294967296;
-	static const short int ELEM_BITS = 32;
+	static constexpr DOUBLE_ELEM_TYPE BASE = 4294967296;
+	static constexpr short int ELEM_BITS = 32;
 
 	friend std::ostream& operator<<(std::ostream& s, const BigInt& n);
 	friend std::istream& operator>>(std::istream& s, BigInt &n);
