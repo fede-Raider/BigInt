@@ -10,15 +10,11 @@ void TestMathsOperators();
 void TestMultiplication();
 void TestDivision();
 void TestModule();
+void TestBitwiseOperators();
 void TestExample();
 
 int main() {
-	assert((BigInt(4) >> 1) == 2);
-	assert((BigInt(4) << 1) == 8);
-	assert((BigInt(4) << 0) == 4);
-	assert((BigInt(1) << 100) == "1267650600228229401496703205376");
-	assert((BigInt("1267650600228229401496703205376") >> 100) == 1);
-	assert((BigInt(1) | 2) == 3);
+	
 
 	TestConstruction();
 	std::cout << "Test 0 - Construction : succeeded\n";
@@ -44,9 +40,14 @@ int main() {
 	TestModule();
 	std::cout << "Test 7 - Module : succeeded\n";
 
+	TestBitwiseOperators();
+	std::cout << "Test 8 - Module: succeeded\n";
+
 	TestExample();
 	std::cout << "Test Example : succeeded\n";
 	std::cout << "Execution ended\n";
+
+	
 
 	int k = 0;
 	std::cin >> k;
@@ -437,6 +438,27 @@ void TestModule() {
 	assert(x % 6 == 3);
 	assert(x % 7 == 1);
 	assert(x % 8 == 7);
+}
+
+void TestBitwiseOperators()
+{
+	assert((BigInt(4) >> 1) == 2);
+	assert((BigInt(4) << 1) == 8);
+	assert((BigInt(4) << 0) == 4);
+	assert((BigInt(1) << 100) == "1267650600228229401496703205376");
+	assert((BigInt("1267650600228229401496703205376") >> 100) == 1);
+	assert((BigInt(1) | 2) == 3);
+
+	BigInt x{ "1245676876855863456346454554745" };
+	BigInt y = x;
+	assert((y ^ x) == BigInt(0));
+	y = (BigInt(1) <<= 33) + (BigInt(1) <<= 26);
+	x = (BigInt(1) << 31) + (BigInt(1) << 30) + (BigInt(1) <<= 26);
+	assert((y ^ x) == "11811160064");
+	//assert((x ^ y) == "3221225472");
+	assert((y ^ x) - (x ^ y) == 0);
+
+
 }
 
 void TestExample() {

@@ -478,10 +478,26 @@ BigInt BigInt::operator^(const BigInt& other) const {
 }
 
 const BigInt& BigInt::operator^=(const BigInt& other) {
-	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
+	size_t i;
+	if (number.size() > other.number.size())
+	{
+		i = other.number.size();
+	}
+	else
+	{
+		i= number.size();
+		size_t j = other.number.size() - number.size();
+		size_t a=0;
+		while (a < j)
+		{
+			number.push_back(other.number[i + a]);
+			++a;
+		}
+	}
 	for (; i > 0; i--) {
 		number[i - 1] ^= other.number[i - 1];
 	}
+	RemoveUselessZero();
 	return *this;
 }
 
