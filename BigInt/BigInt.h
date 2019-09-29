@@ -74,11 +74,15 @@ public:
 	bool operator>=(const BigInt& rhs) const;
 
 	//BITWISE OPERATORS
-	//BigInt operator&(const BigInt& other) const;
-	//BigInt operator|(const BigInt& other) const;
+	BigInt operator&(const BigInt& other) const;
+	BigInt operator|(const BigInt& other) const;
+	BigInt operator^(const BigInt& other) const;
 	BigInt operator<<(const BigInt &rhs) const;
 	BigInt operator>>(const BigInt &rhs)const;
 
+	const BigInt& operator&=(const BigInt& other);
+	const BigInt& operator|=(const BigInt& other);
+	const BigInt& operator^=(const BigInt& other);
 	const BigInt& operator>>=(const BigInt &rhs);
 	const BigInt& operator<<=(const BigInt &rhs);
 

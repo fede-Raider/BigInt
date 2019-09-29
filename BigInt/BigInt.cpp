@@ -443,6 +443,48 @@ const BigInt& BigInt::operator>>=(const BigInt& shift) {
 	return *this;
 }
 
+BigInt BigInt::operator&(const BigInt& other) const {
+	BigInt result(*this);
+	result &= other;
+	return result;
+}
+
+const BigInt& BigInt::operator&=(const BigInt& other) {
+	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
+	for (; i > 0; i--) {
+		number[i - 1] &= other.number[i - 1];
+	}
+	return *this;
+}
+
+BigInt BigInt::operator|(const BigInt& other) const {
+	BigInt result(*this);
+	result |= other;
+	return result;
+}
+
+const BigInt& BigInt::operator|=(const BigInt& other) {
+	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
+	for (; i > 0; i--) {
+		number[i - 1] |= other.number[i - 1];
+	}
+	return *this;
+}
+
+BigInt BigInt::operator^(const BigInt& other) const {
+	BigInt result(*this);
+	result ^= other;
+	return result;
+}
+
+const BigInt& BigInt::operator^=(const BigInt& other) {
+	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
+	for (; i > 0; i--) {
+		number[i - 1] ^= other.number[i - 1];
+	}
+	return *this;
+}
+
 BigInt BigInt::operator<<(const BigInt& shift) const {
 	BigInt result(*this);
 	result <<= shift;

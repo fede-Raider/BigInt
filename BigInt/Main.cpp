@@ -18,6 +18,7 @@ int main() {
 	assert((BigInt(4) << 0) == 4);
 	assert((BigInt(1) << 100) == "1267650600228229401496703205376");
 	assert((BigInt("1267650600228229401496703205376") >> 100) == 1);
+	assert((BigInt(1) | 2) == 3);
 
 	TestConstruction();
 	std::cout << "Test 0 - Construction : succeeded\n";
@@ -287,7 +288,6 @@ void TestMultiplication() {
 	x1 = "123000000000000000345";
 	x2 = "115085000000000000001";
 	xres = x1 * x2;
-	std::cout << xres;
 	assert(xres == "14155455000000000039827325000000000000345");
 
 	x1 = "123008123000000545345";
@@ -377,7 +377,6 @@ void TestDivision() {
 	x1 = "978141554550000000000398273250000000000003455671234";
 	x2 = "657293042012542045321782";
 	BigInt res = x1 /= x2;
-	std::cout << res;
 	assert(x1 == "1488136176757726470237790039");
 
 	x1 = "5";
@@ -450,15 +449,15 @@ void TestExample() {
 	z %= 5;
 
 	BigInt w = ("348734834853836786386736");
-	std::cout << w;
+
 	w++;
 	if (w <= y) {
 
 	}
 	z %= x;
-	//std::cout << y;
+	std::cout << y;
 	x = -y;
-	//x <<= 5;
+	x <<= 5;
 	//w = pow(w, y);
 
 	BigInt testcin;
