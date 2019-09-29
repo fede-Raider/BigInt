@@ -15,6 +15,7 @@ void TestExample();
 int main() {
 	assert((BigInt(4) >> 1) == 2);
 	assert((BigInt(4) << 1) == 8);
+	assert((BigInt(4) << 0) == 4);
 	assert((BigInt(1) << 100) == "1267650600228229401496703205376");
 	assert((BigInt("1267650600228229401496703205376") >> 100) == 1);
 
