@@ -218,9 +218,19 @@ BigInt::BigInt(unsigned long long i) : positive(true) {
 }
 
 BigInt::BigInt(const std::string& s) {
+	if (!s.size()) {
+		number.push_back(0);
+		return;
+	}
 	positive = s[0] != '-' ? true : false;
-	size_t slot = s.size() / DIGIT_COUNT + 1;
 
+	if (!positive && s.size() < 2) {
+		positive = true;
+		number.push_back(0);
+		return;
+	}
+
+	size_t slot = s.size() / DIGIT_COUNT + 1;
 	number.reserve(slot);
 	for (size_t i = 1; i < slot; ++i) {
 		number.push_back(atoi(s.substr(s.size() - i * DIGIT_COUNT, DIGIT_COUNT).c_str()));
