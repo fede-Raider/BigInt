@@ -481,7 +481,7 @@ BigInt BigInt::operator<<(const BigInt &rhs) const {
 			{
 				//I divided shift in two parts: the first one involves shifts of a number of positions less than 27, which does not involve
 				// creation of new vector elements
-				//in the method shift numbers left there is an offset mask which knows all the bits needed to store the last vector elemenent
+				//in the method 'shift numbers left' there is an offset mask which knows all the bits needed to store the last vector elemenent
 				result = *this;
 				BigInt shiftCount =rhs%27;
 				unsigned short int shiftCountVal = shiftCount.number[0];
@@ -492,7 +492,10 @@ BigInt BigInt::operator<<(const BigInt &rhs) const {
 				{
 					//we should shift 27 position each time, and also cancel from the left
 					//again, we should cancel out 27 bits each time and we could need a mask if these bits are distributed over two numbers
+					result.number.insert(result.number.begin(),0);
+					--shiftCount;
 				}
+				return result;
 				
 			}
 		}
@@ -505,6 +508,47 @@ BigInt BigInt::operator<<(const BigInt &rhs) const {
 	{
 		return result= std::move(*this);
 	}
+}
+BigInt BigInt::operator>>(const BigInt &rhs)const
+{
+	BigInt result;
+	if (isShiftable)
+	{
+		if (rhs.positive)
+		{
+			if (rhs >= 27 * number.size())
+			{
+				return result;
+			}
+			else
+			{
+				result = *this;
+				BigInt shiftCount = rhs / 27;
+				while (shiftCount > 0)
+				{
+					//we should shift 27 position each time, and also cancel from the left
+					//again, we should cancel out 27 bits each time and we could need a mask if these bits are distributed over two numbers
+					result.number.erase(result.number.begin());
+					--shiftCount;
+				}
+				shiftCount = rhs % 27;
+
+				unsigned short int shiftCountVal = shiftCount.number[0];
+
+				result.ShiftNumbersRight(shiftCountVal);
+				return result;
+			}
+		}
+		else
+		{
+			return *this << (-rhs);
+		}
+	}
+	else
+	{
+	return result = std::move(*this);
+	}
+
 }
 
 BigInt BigInt::operator%(const BigInt& rhs) const
@@ -537,18 +581,19 @@ BigInt BigInt::operator%(const BigInt& rhs) const
 		R -= D * cnt;
 	}
 	R.positive= (positive == rhs.positive);
+	return R;
 }
 
 void BigInt::ShiftNumbersLeft(unsigned short int shiftCount)
 {
-	ELEM_TYPE offsetMask;
+	ELEM_TYPE offsetMask=0;
 	unsigned short int offsetIndex = 27;
 	while(offsetIndex>0)
 	{
 		--offsetIndex;
 		offsetMask += 1 << offsetIndex;
 	}
-	ELEM_TYPE offsetMask = offsetMask & (*(number.end()-1));
+	offsetMask = offsetMask & (*(number.end()-1));
 	offsetIndex = 27;
 	bool found =false;
 	while (offsetIndex > 0)
@@ -584,6 +629,29 @@ void BigInt::ShiftNumbersLeft(unsigned short int shiftCount)
 	(*(number.end() - 1)) &= offsetMask;
 }
 
+
+
+void BigInt::ShiftNumbersRight(unsigned short int shiftCount)
+{
+	
+	ELEM_TYPE shiftMask = 0;
+	unsigned short int shiftCountIncr = 0;
+	while (shiftCountIncr != shiftCount)
+	{
+		shiftMask += 1 << shiftCountIncr;
+		++shiftCount;
+	}
+	ELEM_TYPE toNextOrder = 0;
+	ELEM_TYPE fromUpperOrder = 0;
+	for (std::vector<ELEM_TYPE>::reverse_iterator it = number.rbegin(); it != number.rend(); it++)
+	{
+		fromUpperOrder = toNextOrder << (27 - shiftCount);
+		toNextOrder = shiftMask & (*it);
+		(*it) = (*it) >> shiftCount;
+
+		(*it) = (*it) | fromUpperOrder;
+	}
+}
 
 void BigInt::IntToBin()
 {

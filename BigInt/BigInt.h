@@ -85,6 +85,8 @@ private:
 	void CheckZero();
 	void RemoveUselessZero();
 	void ShiftNumbersLeft(unsigned short int shiftCount);
+	void ShiftNumbersRight(unsigned short int shiftCount);
+
 	void IntToBin();
 	BigInt abs() const;
 private:
