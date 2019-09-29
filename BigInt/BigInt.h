@@ -6,7 +6,7 @@ namespace {
 		uint64_t quot;
 		uint64_t rem;
 
-		static div_ct Divide(int_fast64_t n, int_fast64_t d) {
+		static div_ct Divide(uint64_t n, uint64_t d) {
 			div_ct result;
 			result.quot = n / d;
 			result.rem = n % d;
