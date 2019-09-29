@@ -434,9 +434,12 @@ const BigInt& BigInt::operator>>=(const BigInt& shift) {
 	for (size_t i = number.size(); i > 0; i--) {
 		nextcarry = number[i - 1] & mask;
 		number[i - 1] >>= shiftCopy.number[0];
+		carry <<= ELEM_BITS - shiftCopy.number[0];
 		number[i - 1] |= carry;
 		carry = nextcarry;
 	}
+
+	RemoveUselessZero();
 	return *this;
 }
 
@@ -467,8 +470,14 @@ const BigInt& BigInt::operator<<=(const BigInt& shift) {
 	for (size_t i = 0; i < number.size(); i++) {
 		nextcarry = number[i] & mask;
 		number[i] <<= shiftCopy.number[0];
+		carry >>= ELEM_BITS - shiftCopy.number[0];
 		number[i] |= carry;
 		carry = nextcarry;
 	}
+	if (carry) {
+		number.push_back(carry);
+	}
+
+	RemoveUselessZero();
 	return *this;
 }
