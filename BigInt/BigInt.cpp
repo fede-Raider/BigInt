@@ -413,7 +413,7 @@ BigInt BigInt::operator>>(const BigInt& shift) const {
 	return result;
 }
 
-BigInt BigInt::operator>>=(const BigInt& shift) {
+const BigInt& BigInt::operator>>=(const BigInt& shift) {
 	if (shift < 0) {
 		return *this <<= -shift;
 	}
@@ -446,7 +446,7 @@ BigInt BigInt::operator<<(const BigInt& shift) const {
 	return result;
 }
 
-BigInt BigInt::operator<<=(const BigInt& shift) {
+const BigInt& BigInt::operator<<=(const BigInt& shift) {
 	if (shift < 0) {
 		return *this >>= -shift;
 	}

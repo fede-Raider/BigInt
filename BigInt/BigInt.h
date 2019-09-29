@@ -79,8 +79,8 @@ public:
 	BigInt operator<<(const BigInt &rhs) const;
 	BigInt operator>>(const BigInt &rhs)const;
 
-	BigInt operator>>=(const BigInt &rhs);
-	BigInt operator<<=(const BigInt &rhs);
+	const BigInt& operator>>=(const BigInt &rhs);
+	const BigInt& operator<<=(const BigInt &rhs);
 
 private:
 	std::pair<BigInt, BigInt> divmod (const BigInt& divisor) const;
