@@ -483,11 +483,9 @@ BigInt BigInt::operator<<(const BigInt &rhs) const {
 				// creation of new vector elements
 				//in the method 'shift numbers left' there is an offset mask which knows all the bits needed to store the last vector elemenent
 				result = *this;
-				BigInt shiftCount =rhs%27;
-				unsigned short int shiftCountVal = shiftCount.number[0];
-				result.ShiftNumbersLeft(shiftCountVal);
+				
 
-				shiftCount = rhs / 27;
+				BigInt shiftCount = rhs / 27;
 				while (shiftCount > 0)
 				{
 					//we should shift 27 position each time, and also cancel from the left
@@ -495,6 +493,10 @@ BigInt BigInt::operator<<(const BigInt &rhs) const {
 					result.number.insert(result.number.begin(),0);
 					--shiftCount;
 				}
+				shiftCount = rhs % 27;
+				unsigned short int shiftCountVal = shiftCount.number[0];
+				result.ShiftNumbersLeft(shiftCountVal);
+				result.RemoveDigitsOnTheLeft(rhs);
 				return result;
 				
 			}
@@ -536,6 +538,7 @@ BigInt BigInt::operator>>(const BigInt &rhs)const
 				unsigned short int shiftCountVal = shiftCount.number[0];
 
 				result.ShiftNumbersRight(shiftCountVal);
+				result.RemoveUselessZero();
 				return result;
 			}
 		}
@@ -583,9 +586,13 @@ BigInt BigInt::operator%(const BigInt& rhs) const
 	R.positive= (positive == rhs.positive);
 	return R;
 }
+void BigInt::RemoveDigitsOnTheLeft(BigInt& shiftCount)
+{
 
+}
 void BigInt::ShiftNumbersLeft(unsigned short int shiftCount)
 {
+	/*
 	ELEM_TYPE offsetMask=0;
 	unsigned short int offsetIndex = 27;
 	while(offsetIndex>0)
@@ -608,7 +615,7 @@ void BigInt::ShiftNumbersLeft(unsigned short int shiftCount)
 			offsetMask += (1 << offsetIndex);
 		}
 	}
-
+	*/
 	ELEM_TYPE shiftMask = 0;
 	unsigned short int shiftCountCopy = shiftCount;
 	while (shiftCountCopy != 0)
@@ -618,7 +625,13 @@ void BigInt::ShiftNumbersLeft(unsigned short int shiftCount)
 	}
 	ELEM_TYPE toNextOrder=0;
 	ELEM_TYPE fromLowerOrder=0;
-	for (std::vector<ELEM_TYPE>::iterator it = number.begin(); it != number.end(); it++)
+
+	std::vector<ELEM_TYPE>::iterator it = number.begin();
+	while ((*it) == 0)
+	{
+		++it;
+	}
+	for (; it != number.end(); it++)
 	{
 		fromLowerOrder = toNextOrder>>(27-shiftCount);
 		toNextOrder = shiftMask & (*it);
@@ -626,7 +639,7 @@ void BigInt::ShiftNumbersLeft(unsigned short int shiftCount)
 
 		(*it) = (*it) | fromLowerOrder;
 	}
-	(*(number.end() - 1)) &= offsetMask;
+	//(*(number.end() - 1)) &= offsetMask;
 }
 
 
