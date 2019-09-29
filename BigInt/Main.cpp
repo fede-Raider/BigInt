@@ -120,10 +120,10 @@ void TestIncrementOperators() {
 		assert(++x1 == 2);
 		BigInt x2 = 0;
 		assert(++x2 == 1);
-		BigInt x3 = "999999999";
-		assert(++x3 == "1000000000");
-		BigInt x4 = "-999999999";
-		assert(++x4 == "-999999998");
+		BigInt x3 = "4294967295";
+		assert(++x3 == "4294967296");
+		BigInt x4 = "-4294967295";
+		assert(++x4 == "-4294967294");
 		BigInt x5 = "-1";
 		assert(++x5 == "0");
 		BigInt x6 = "-2";
@@ -140,12 +140,12 @@ void TestIncrementOperators() {
 	BigInt x2 = 0;
 	assert(x2++ == 0);
 	assert(x2 == 1);
-	BigInt x3 = "999999999";
-	assert(x3++ == "999999999");
-	assert(x3++ == "1000000000");
-	BigInt x4 = "-999999999";
-	assert(x4++ == "-999999999");
-	assert(x4 == "-999999998");
+	BigInt x3 = "4294967295";
+	assert(x3++ == "4294967295");
+	assert(x3++ == "4294967296");
+	BigInt x4 = "-4294967295";
+	assert(x4++ == "-4294967295");
+	assert(x4 == "-4294967294");
 	BigInt x5 = "-1";
 	assert(x5++ == "-1");
 	assert(x5 == "0");
@@ -156,14 +156,14 @@ void TestIncrementOperators() {
 	assert(x7++ == "0");
 	assert(x7 == "1");
 
-	x1 = "-1000000000";
+	x1 = "-4294967296";
 	x1++;
-	assert(x1 == "-999999999");
+	assert(x1 == "-4294967295");
 
 	//int--
-	x1 = "1000000000";
+	x1 = "4294967296";
 	x1--;
-	assert(x1 == "999999999");
+	assert(x1 == "4294967295");
 
 	x1 = "0";
 	assert(x1-- == "0");
@@ -178,12 +178,12 @@ void TestIncrementOperators() {
 }
 
 void TestMathsOperators() {
-	BigInt x = 999999999;
+	BigInt x = 4294967295;
 	BigInt y = 1;
-	assert(x + y == "1000000000");
-	assert(y + x == "1000000000");
-	assert(x - y == "999999998");
-	assert(y - x == "-999999998");
+	assert(x + y == "4294967296");
+	assert(y + x == "4294967296");
+	assert(x - y == "4294967294");
+	assert(y - x == "-4294967294");
 
 	BigInt x1 = 999999999;
 	BigInt y1 = 999999999;
@@ -273,10 +273,10 @@ void TestMathsOperators() {
 	x += y;
 	assert(x == "-999999999");
 
-	x = 999999999;
+	x = 4294967296;
 	y = 1;
 	x -= y;
-	assert(x == "999999998");
+	assert(x == "4294967295");
 }
 
 void TestMultiplication() {
