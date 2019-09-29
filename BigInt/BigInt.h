@@ -52,7 +52,7 @@ public:
 	BigInt operator-() const;
 	BigInt operator*(const BigInt& rhs) const;
 	BigInt operator/(const BigInt& rhs) const;
-	//BigInt operator%(const BigInt& rhs) const;
+	BigInt operator%(const BigInt& rhs) const;
 
 	const BigInt& operator+=(const BigInt& rhs);
 	const BigInt& operator-=(const BigInt& rhs);
@@ -77,15 +77,19 @@ public:
 	//BITWISE OPERATORS
 	//BigInt operator&(const BigInt& other) const;
 	//BigInt operator|(const BigInt& other) const;
-	//BigInt operator<<(const BigInt &rhs);
-	//BigInt operator<<(const BigInt &rhs);
+	BigInt operator<<(const BigInt &rhs) const;
+	BigInt operator>>(const BigInt &rhs)const;
 
 private:
 	div_ct DivideNumberToBase(PRODUCT_TYPE n) const;
 	void CheckZero();
 	void RemoveUselessZero();
+	void ShiftNumbersLeft(unsigned short int shiftCount);
+	void IntToBin();
 	BigInt abs() const;
 private:
 	std::vector<ELEM_TYPE> number;
+	std::vector<bool> binaryRepresentation;
 	bool positive = true;
+	bool isShiftable = true;
 };

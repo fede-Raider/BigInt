@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <limits.h>
 
 BigInt::BigInt() : positive(true) {
 	number.push_back(0);
@@ -447,4 +448,163 @@ BigInt pow(const BigInt& base, const BigInt& exp) {
 		return result;
 	}
 
+}
+
+BigInt BigInt::operator<<(const BigInt &rhs) const {
+	BigInt result;
+	//bool isShiftable=true;
+	//if every number is less than 134217728 (2 ^ 27) the whole number is shiftable
+	//if not, there's at least a number which exploits bits from the 28th to the 30th
+	//then, after shifting we could find a bit set to 1 in a position lower than 28th
+	//so we could obtain a not mapped number
+	// only numbers with 9 digits groups less or equal than 134217727 can be shifted
+	
+	if (isShiftable)
+	{
+		if (rhs.positive)
+		{
+			if (rhs >= 27 * number.size())
+			{
+				return result;
+			}
+			else
+			{
+				//I divided shift in two parts: the first one involves shifts of a number of positions less than 27, which does not involve
+				// creation of new vector elements
+				//in the method shift numbers left there is an offset mask which knows all the bits needed to store the last vector elemenent
+				result = *this;
+				BigInt shiftCount =rhs%27;
+				unsigned short int shiftCountVal = shiftCount.number[0];
+				result.ShiftNumbersLeft(shiftCountVal);
+
+				shiftCount = rhs / 27;
+				while (shiftCount > 0)
+				{
+					//we should shift 27 position each time, and also cancel from the left
+					//again, we should cancel out 27 bits each time and we could need a mask if these bits are distributed over two numbers
+				}
+				
+			}
+		}
+		else
+		{
+			return *this >> (-rhs);
+		}
+	}
+	else
+	{
+		return result= std::move(*this);
+	}
+}
+
+BigInt BigInt::operator%(const BigInt& rhs) const
+{
+	BigInt R, D = (rhs.positive ? rhs : -rhs), N = (positive ? *this : -*this);
+	for (size_t i = N.number.size(); i > 0; --i) {
+		R.number.insert(R.number.begin(), N.number[i - 1]);
+		R.RemoveUselessZero();
+
+		ELEM_TYPE min = 0, max = BASE - 1;
+		while (max > min) {
+			ELEM_TYPE avg = max + min;
+			div_ct dt = div_ct::Divide(avg, 2);
+
+			avg = dt.rem ? (dt.quot + 1) : dt.quot;
+			BigInt prod = D * avg;
+			if (R == prod) {
+				min = avg;
+				break;
+			}
+			else if (R > prod) {
+				min = avg;
+			}
+			else {
+				max = avg - 1;
+			}
+		}
+		ELEM_TYPE cnt = min;
+
+		R -= D * cnt;
+	}
+	R.positive= (positive == rhs.positive);
+}
+
+void BigInt::ShiftNumbersLeft(unsigned short int shiftCount)
+{
+	ELEM_TYPE offsetMask;
+	unsigned short int offsetIndex = 27;
+	while(offsetIndex>0)
+	{
+		--offsetIndex;
+		offsetMask += 1 << offsetIndex;
+	}
+	ELEM_TYPE offsetMask = offsetMask & (*(number.end()-1));
+	offsetIndex = 27;
+	bool found =false;
+	while (offsetIndex > 0)
+	{
+		--offsetIndex;
+		if (!found && (offsetMask & (1 << offsetIndex)) == true)
+		{
+			found = true;
+		}
+		if (found && (offsetMask & (1 << offsetIndex)) == false)
+		{
+			offsetMask += (1 << offsetIndex);
+		}
+	}
+
+	ELEM_TYPE shiftMask = 0;
+	unsigned short int shiftCountCopy = shiftCount;
+	while (shiftCountCopy != 0)
+	{
+		shiftMask += 1 << (27 - shiftCountCopy);
+		--shiftCount;
+	}
+	ELEM_TYPE toNextOrder=0;
+	ELEM_TYPE fromLowerOrder=0;
+	for (std::vector<ELEM_TYPE>::iterator it = number.begin(); it != number.end(); it++)
+	{
+		fromLowerOrder = toNextOrder>>(27-shiftCount);
+		toNextOrder = shiftMask & (*it);
+		(*it) = (*it) << shiftCount;
+
+		(*it) = (*it) | fromLowerOrder;
+	}
+	(*(number.end() - 1)) &= offsetMask;
+}
+
+
+void BigInt::IntToBin()
+{
+	size_t i = number.size();
+	while (i > 0)
+	{
+		--i;
+		if (number[i] > 134217727)
+		{
+			isShiftable = false;
+		}
+	}
+	if (isShiftable)
+	{
+		for (std::vector<ELEM_TYPE>::reverse_iterator rit = number.rbegin(); rit != number.rend(); rit++)
+		{
+			//size_t pos = 26;
+			uint_fast32_t i = 1 << 26;
+			while ( i > 0)
+			{
+				(*rit) & i ? binaryRepresentation.push_back(true) : binaryRepresentation.push_back(false);
+				i /= 2;
+				//--pos;
+			}
+		}
+		size_t i = binaryRepresentation.size();
+		while (!binaryRepresentation[i])
+		{
+			binaryRepresentation.pop_back();
+			i = binaryRepresentation.size();
+		}
+	}
+	
 }
