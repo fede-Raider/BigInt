@@ -441,6 +441,14 @@ void TestModule() {
 	assert(x % 6 == 3);
 	assert(x % 7 == 1);
 	assert(x % 8 == 7);
+
+	BigInt y = 23456000003780;
+	assert(y % 1000000000==3780);
+	y = 4294968000;
+	assert(y % 4294967296 == 704);
+	y = "23567206835670532567334503";
+	x = "485937290583028506";
+	assert(y % x == "473319472554461791");
 }
 
 void TestBitwiseOperators()
