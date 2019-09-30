@@ -14,8 +14,6 @@ void TestBitwiseOperators();
 void TestExample();
 
 int main() {
-	
-
 	TestConstruction();
 	std::cout << "Test 0 - Construction : succeeded\n";
 
@@ -458,7 +456,20 @@ void TestBitwiseOperators()
 	//assert((x ^ y) == "3221225472");
 	assert((y ^ x) - (x ^ y) == 0);
 
+	assert(BigInt() << 10000 == 0);
+	assert(BigInt(66) >> 10000 == 0);
 
+	assert(BigInt(4294967295) >> 31 == 1);
+	assert(BigInt(4294967295) >> 32 == 0);
+	assert(BigInt(4294967295) >> 33 == 0);
+
+	assert(BigInt(4294967296) >> 31 == 2);
+	assert(BigInt(4294967296) >> 32 == 1);
+	assert(BigInt(4294967296) >> 33 == 0);
+
+	assert(BigInt(4294967295) << 1 == 8589934590);
+	assert(BigInt(1) << 32 == 4294967296);
+	assert(BigInt(1) << 33 == 8589934592);
 }
 
 void TestExample() {

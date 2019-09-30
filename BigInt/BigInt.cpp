@@ -418,8 +418,13 @@ const BigInt& BigInt::operator>>=(const BigInt& shift) {
 		return *this <<= -shift;
 	}
 
+	if (shift / ELEM_BITS >= number.size()) {
+		*this = 0;
+		return *this;
+	}
+
 	BigInt shiftCopy = shift;
-	while (shiftCopy > ELEM_BITS) {
+	while (shiftCopy >= ELEM_BITS) {
 		number.erase(number.begin());
 		shiftCopy -= ELEM_BITS;
 	}
@@ -451,9 +456,15 @@ BigInt BigInt::operator&(const BigInt& other) const {
 
 const BigInt& BigInt::operator&=(const BigInt& other) {
 	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
+	size_t j = number.size() > other.number.size() ? number.size() : other.number.size();
+
+	for (size_t k = number.size(); k < j; k++) {
+		number.push_back(other.number[k]);
+	}
 	for (; i > 0; i--) {
 		number[i - 1] &= other.number[i - 1];
 	}
+	RemoveUselessZero();
 	return *this;
 }
 
@@ -465,9 +476,15 @@ BigInt BigInt::operator|(const BigInt& other) const {
 
 const BigInt& BigInt::operator|=(const BigInt& other) {
 	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
+	size_t j = number.size() > other.number.size() ? number.size() : other.number.size();
+
+	for (size_t k = number.size(); k < j; k++) {
+		number.push_back(other.number[k]);
+	}
 	for (; i > 0; i--) {
 		number[i - 1] |= other.number[i - 1];
 	}
+	RemoveUselessZero();
 	return *this;
 }
 
@@ -478,21 +495,11 @@ BigInt BigInt::operator^(const BigInt& other) const {
 }
 
 const BigInt& BigInt::operator^=(const BigInt& other) {
-	size_t i;
-	if (number.size() > other.number.size())
-	{
-		i = other.number.size();
-	}
-	else
-	{
-		i= number.size();
-		size_t j = other.number.size() - number.size();
-		size_t a=0;
-		while (a < j)
-		{
-			number.push_back(other.number[i + a]);
-			++a;
-		}
+	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
+	size_t j = number.size() > other.number.size() ? number.size() : other.number.size();
+
+	for (size_t k = number.size(); k < j; k++) {
+		number.push_back(other.number[k]);
 	}
 	for (; i > 0; i--) {
 		number[i - 1] ^= other.number[i - 1];
@@ -513,7 +520,7 @@ const BigInt& BigInt::operator<<=(const BigInt& shift) {
 	}
 
 	BigInt shiftCopy = shift;
-	while (shiftCopy > ELEM_BITS) {
+	while (shiftCopy >= ELEM_BITS) {
 		number.insert(number.begin(), 0);
 		shiftCopy -= ELEM_BITS;
 	}
@@ -533,6 +540,7 @@ const BigInt& BigInt::operator<<=(const BigInt& shift) {
 		carry = nextcarry;
 	}
 	if (carry) {
+		carry >>= ELEM_BITS - shiftCopy.number[0];
 		number.push_back(carry);
 	}
 
