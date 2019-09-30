@@ -470,6 +470,11 @@ void TestBitwiseOperators()
 	assert(BigInt(4294967295) << 1 == 8589934590);
 	assert(BigInt(1) << 32 == 4294967296);
 	assert(BigInt(1) << 33 == 8589934592);
+
+	assert(((BigInt(4294967295) << 1) | 1) == 8589934591);
+	assert(((BigInt(4294967295) << 1) & 1) == 0);
+	assert(((BigInt(4294967295) << 1) ^ 1) == 8589934591);
+
 }
 
 void TestExample() {

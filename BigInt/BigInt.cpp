@@ -455,14 +455,14 @@ BigInt BigInt::operator&(const BigInt& other) const {
 }
 
 const BigInt& BigInt::operator&=(const BigInt& other) {
-	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
 	size_t j = number.size() > other.number.size() ? number.size() : other.number.size();
 
-	for (size_t k = number.size(); k < j; k++) {
-		number.push_back(other.number[k]);
+	BigInt otherCopy = other;
+	for (size_t k = otherCopy.number.size(); k < j; k++) {
+		otherCopy.number.push_back(0);
 	}
-	for (; i > 0; i--) {
-		number[i - 1] &= other.number[i - 1];
+	for (; j > 0; j--) {
+		number[j - 1] &= otherCopy.number[j - 1];
 	}
 	RemoveUselessZero();
 	return *this;
@@ -479,7 +479,7 @@ const BigInt& BigInt::operator|=(const BigInt& other) {
 	size_t j = number.size() > other.number.size() ? number.size() : other.number.size();
 
 	for (size_t k = number.size(); k < j; k++) {
-		number.push_back(other.number[k]);
+		number.push_back(0);
 	}
 	for (; i > 0; i--) {
 		number[i - 1] |= other.number[i - 1];
@@ -495,14 +495,19 @@ BigInt BigInt::operator^(const BigInt& other) const {
 }
 
 const BigInt& BigInt::operator^=(const BigInt& other) {
-	size_t i = number.size() > other.number.size() ? other.number.size() : number.size();
-	size_t j = number.size() > other.number.size() ? number.size() : other.number.size();
-
-	for (size_t k = number.size(); k < j; k++) {
-		number.push_back(other.number[k]);
+	BigInt otherCopy = other;
+	if (number.size() > otherCopy.number.size()) {
+		for (size_t k = otherCopy.number.size(); k < number.size(); k++) {
+			otherCopy.number.push_back(0);
+		}
+	} else if (number.size() < otherCopy.number.size()) {
+		for (size_t k = number.size(); k < otherCopy.number.size(); k++) {
+			number.push_back(0);
+		}
 	}
-	for (; i > 0; i--) {
-		number[i - 1] ^= other.number[i - 1];
+
+	for (size_t i = number.size(); i > 0; i--) {
+		number[i - 1] ^= otherCopy.number[i - 1];
 	}
 	RemoveUselessZero();
 	return *this;
