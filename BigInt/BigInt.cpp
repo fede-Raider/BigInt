@@ -552,3 +552,12 @@ const BigInt& BigInt::operator<<=(const BigInt& shift) {
 	RemoveUselessZero();
 	return *this;
 }
+
+BigInt BigInt::operator~() const {
+	BigInt result(*this);
+	for (size_t i = 0; i < result.number.size(); i++) {
+		result.number[i] = ~result.number[i];
+	}
+	result.RemoveUselessZero();
+	return result;
+}

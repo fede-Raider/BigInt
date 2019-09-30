@@ -86,6 +86,9 @@ public:
 	const BigInt& operator>>=(const BigInt &rhs);
 	const BigInt& operator<<=(const BigInt &rhs);
 
+	//UNARY OPERATORS
+	BigInt operator~() const;
+
 private:
 	std::pair<BigInt, BigInt> divmod (const BigInt& divisor) const;
 	void CheckZero();

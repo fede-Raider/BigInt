@@ -453,7 +453,7 @@ void TestBitwiseOperators()
 	y = (BigInt(1) <<= 33) + (BigInt(1) <<= 26);
 	x = (BigInt(1) << 31) + (BigInt(1) << 30) + (BigInt(1) <<= 26);
 	assert((y ^ x) == "11811160064");
-	//assert((x ^ y) == "3221225472");
+	assert((x ^ y) == "11811160064");
 	assert((y ^ x) - (x ^ y) == 0);
 
 	assert(BigInt() << 10000 == 0);
@@ -475,6 +475,8 @@ void TestBitwiseOperators()
 	assert(((BigInt(4294967295) << 1) & 1) == 0);
 	assert(((BigInt(4294967295) << 1) ^ 1) == 8589934591);
 
+	assert(~BigInt(4294967295) == 0);
+	assert(~BigInt(4294967294) == 1);
 }
 
 void TestExample() {
