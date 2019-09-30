@@ -39,7 +39,7 @@ int main() {
 	std::cout << "Test 7 - Module : succeeded\n";
 
 	TestBitwiseOperators();
-	std::cout << "Test 8 - Module: succeeded\n";
+	std::cout << "Test 8 - Bitwise Operators: succeeded\n";
 
 	TestExample();
 	std::cout << "Test Example : succeeded\n";
@@ -441,14 +441,17 @@ void TestModule() {
 	assert(x % 6 == 3);
 	assert(x % 7 == 1);
 	assert(x % 8 == 7);
+	assert(x % "-8" == -7);
+	assert(-x % (-8) == 7);
+
 
 	BigInt y = 23456000003780;
 	assert(y % 1000000000==3780);
 	y = 4294968000;
 	assert(y % 4294967296 == 704);
 	y = "23567206835670532567334503";
-	x = "485937290583028506";
-	assert(y % x == "473319472554461791");
+	x = "-485937290583028506";
+	assert(y % x == "-473319472554461791");
 }
 
 void TestBitwiseOperators()
@@ -488,8 +491,17 @@ void TestBitwiseOperators()
 	assert(((BigInt(4294967295) << 1) & 1) == 0);
 	assert(((BigInt(4294967295) << 1) ^ 1) == 8589934591);
 
-	assert(~BigInt(4294967295) == 0);
-	assert(~BigInt(4294967294) == 1);
+	assert(~BigInt(4294967295) == 0); //2^32 - 1
+	assert(~BigInt(4294967294) == 1); //2^32 - 2
+
+	assert(~BigInt(40) == 4294967255); //2^5 + 2^3
+	y = BigInt{ "1125899906842624" }; //2^50
+	y >>= 1;
+	assert(y == "562949953421312"); //2^49
+	y <<= 17;
+	assert(y == "73786976294838206464"); //2^66
+	y >>= 64;
+	assert(y == 4);
 }
 
 void TestExample() {
