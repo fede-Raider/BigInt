@@ -402,7 +402,6 @@ std::pair<BigInt, BigInt> BigInt::divmod(const BigInt& divisor) const {
 		Q.number[i - 1] += cnt;
 	}
 	Q.RemoveUselessZero();
-	Q.CheckZero();
 	Q.positive = (Q.number.size() == 1 && Q.number[0] == 0) ? true : (positive == divisor.positive);
 	R.positive = positive;
 	R.RemoveUselessZero();
