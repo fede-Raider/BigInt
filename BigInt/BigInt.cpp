@@ -402,8 +402,11 @@ std::pair<BigInt, BigInt> BigInt::divmod(const BigInt& divisor) const {
 		Q.number[i - 1] += cnt;
 	}
 	Q.RemoveUselessZero();
+	Q.CheckZero();
 	Q.positive = (Q.number.size() == 1 && Q.number[0] == 0) ? true : (positive == divisor.positive);
-	R.positive = (positive == divisor.positive);
+	R.positive = positive;
+	R.RemoveUselessZero();
+	R.CheckZero();
 	return std::pair<BigInt, BigInt>(std::move(Q), std::move(R));
 }
 
@@ -445,6 +448,7 @@ const BigInt& BigInt::operator>>=(const BigInt& shift) {
 	}
 
 	RemoveUselessZero();
+	CheckZero();
 	return *this;
 }
 
@@ -465,6 +469,7 @@ const BigInt& BigInt::operator&=(const BigInt& other) {
 		number[j - 1] &= otherCopy.number[j - 1];
 	}
 	RemoveUselessZero();
+	CheckZero();
 	return *this;
 }
 
@@ -510,6 +515,7 @@ const BigInt& BigInt::operator^=(const BigInt& other) {
 		number[i - 1] ^= otherCopy.number[i - 1];
 	}
 	RemoveUselessZero();
+	CheckZero();
 	return *this;
 }
 
@@ -559,5 +565,6 @@ BigInt BigInt::operator~() const {
 		result.number[i] = ~result.number[i];
 	}
 	result.RemoveUselessZero();
+	result.CheckZero();
 	return result;
 }
