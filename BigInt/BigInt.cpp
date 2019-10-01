@@ -388,18 +388,14 @@ std::pair<BigInt, BigInt> BigInt::divmod(const BigInt& divisor) const {
 			if (R == prod) {
 				min = avg;
 				break;
-			}
-			else if (R > prod) {
+			} else if (R > prod) {
 				min = avg;
-			}
-			else {
+			} else {
 				max = avg - 1;
 			}
 		}
-		DOUBLE_ELEM_TYPE cnt = min;
-
-		R -= D * cnt;
-		Q.number[i - 1] += cnt;
+		R -= D * min;
+		Q.number[i - 1] += min;
 	}
 	Q.RemoveUselessZero();
 	Q.positive = (Q.number.size() == 1 && Q.number[0] == 0) ? true : (positive == divisor.positive);
